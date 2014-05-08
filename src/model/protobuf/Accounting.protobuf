@@ -1,0 +1,30 @@
+package com.javacro.protobuf.model.accounting;
+
+message Customer {
+  //optional  string   id         =1;
+  optional  int64  id         =1;
+  optional  string  name        =2;
+  optional  Profile profile     =3;
+  repeated  Account accounts    =4;
+}
+
+message Profile {
+  optional  string email        =1;
+  optional  string phoneNumber  =2;
+}
+
+message Account {
+  optional  string      IBAN            =1;
+  optional  string      currency        =2;
+  repeated  Transaction transactions    =3;
+}
+
+
+
+message Transaction {
+  optional  double    inflow         =1;
+  optional  double    outflow        =2;
+  optional  string    description    =3;
+  //optional  int64     paymentOn      =4;
+  optional  string     paymentOn      =4;
+}
