@@ -56,45 +56,45 @@ public class JsonSerializationBenchmarks {
 
             {
                 double sumaSumarum = 0;
+                final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
-                    final long startAt = System.currentTimeMillis();
                     benchmark.timeJacksonAfterBurner();
-                    final long endAt = System.currentTimeMillis();
-                    sumaSumarum += endAt - startAt;
                 }
+                final long endAt = System.currentTimeMillis();
+                sumaSumarum += endAt - startAt;
                 System.out.println("JacksonAfterBurner (ms/tests): " + sumaSumarum / NUM_TESTS);
             }
 
             {
                 double sumaSumarum = 0;
+                final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
-                    final long startAt = System.currentTimeMillis();
                     benchmark.timeJacksonStreaming();;
-                    final long endAt = System.currentTimeMillis();
-                    sumaSumarum += endAt - startAt;
                 }
+                final long endAt = System.currentTimeMillis();
+                sumaSumarum += endAt - startAt;
                 System.out.println("JacksonStreaming (ms/tests): " + sumaSumarum / NUM_TESTS);
             }
 
             {
                 double sumaSumarum = 0;
+                final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
-                    final long startAt = System.currentTimeMillis();
                     benchmark.timeJacksonVulgaris();
-                    final long endAt = System.currentTimeMillis();
-                    sumaSumarum += endAt - startAt;
                 }
+                final long endAt = System.currentTimeMillis();
+                sumaSumarum += endAt - startAt;
                 System.out.println("JacksonVulgaris (ms/tests): " + sumaSumarum / NUM_TESTS);
             }
 
             {
                 double sumaSumarum = 0;
+                final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
-                    final long startAt = System.currentTimeMillis();
                     benchmark.timeManualJsonStreaming();;
-                    final long endAt = System.currentTimeMillis();
-                    sumaSumarum += endAt - startAt;
                 }
+                final long endAt = System.currentTimeMillis();
+                sumaSumarum += endAt - startAt;
                 System.out.println("ManualJsonStreaming (ms/tests): " + sumaSumarum / NUM_TESTS);
             }
 
