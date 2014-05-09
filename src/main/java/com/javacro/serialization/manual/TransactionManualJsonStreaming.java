@@ -9,7 +9,7 @@ import com.javacro.dslplatform.model.Accounting.Transaction;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.io.jvm.json.JsonWriter;
 
-public abstract class TransactionManualJsonSerialization {
+public abstract class TransactionManualJsonStreaming {
 //    @Override
     public static boolean isDefault(final Transaction transaction) {
         if (transaction.getInflow() != 0)
@@ -21,7 +21,7 @@ public abstract class TransactionManualJsonSerialization {
         if (!transaction.getDescription().isEmpty())
             return false;
 
-        if (!transaction.getPaymentOn().equals(DateTime.parse("1-1-1-1T00:22")))
+        if (!transaction.getPaymentOn().equals(DateTime.parse("1-1-1T00:22")))
                 return false;
 
         return true;
@@ -43,8 +43,45 @@ public abstract class TransactionManualJsonSerialization {
         return read(jsonReader);
     }
 
-    public static void write(final JsonWriter jsonWriter, final Transaction value) throws IOException {
+    public static void write(final JsonWriter jsonWriter, final Transaction value ) throws IOException {
+
+        boolean needsComma = false;
+
         jsonWriter.writeOpenObject();
+        final Double _inflow = value.getInflow();
+        final Double _outflow = value.getOutflow();
+        final String _description = value.getDescription();
+        final DateTime _paymentOn = value.getPaymentOn();
+
+        jsonWriter.writeOpenObject();
+
+        if(_inflow != 0){
+            if (needsComma) jsonWriter.writeComma();
+            jsonWriter.writeRaw("\"inflow\":");
+            jsonWriter.writeString(_inflow.toString());
+            needsComma=true;
+        }
+
+        if(_outflow != 0){
+            if(needsComma) jsonWriter.writeComma();
+            jsonWriter.writeRaw("\"outflow\":");
+            jsonWriter.writeString(_outflow.toString());
+            needsComma=true;
+        }
+
+        if(!_description.equals("")){
+            if(needsComma) jsonWriter.writeComma();
+            jsonWriter.writeRaw("\"description\":");
+            jsonWriter.writeString(_description.toString());
+            needsComma=true;
+        }
+
+        if(!_paymentOn.equals(DateTime.parse("1-1-1T00:22"))){
+            if (needsComma) jsonWriter.writeComma();
+            jsonWriter.writeRaw("\"paymentOn\":");
+            jsonWriter.writeString(_paymentOn.toString());
+            needsComma = true;
+        }
 
         jsonWriter.writeCloseObject();
     }

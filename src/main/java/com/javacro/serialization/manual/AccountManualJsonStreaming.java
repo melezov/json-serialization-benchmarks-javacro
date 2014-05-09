@@ -10,20 +10,20 @@ import com.javacro.dslplatform.model.Accounting.Transaction;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.io.jvm.json.JsonWriter;
 
-public abstract class AccountManualJsonSerialization {
+public abstract class AccountManualJsonStreaming {
 //    @Override
     public static boolean isDefault(final Account account) {
 
-        final boolean accountsAreDefault = true;
+        if(account.getIBAN().equals(""))
+            return false;
+
+        if(account.getCurrency().equals(""))
+            return false;
+
         for(final Transaction t : account.getTransactions()){
-            if(!TransactionManualJsonSerialization.isDefault(t))
+            if(!TransactionManualJsonStreaming.isDefault(t))
                 return false;
         }
-
-        if(account.getIBAN().isEmpty()
-                && account.getCurrency().isEmpty()
-                && accountsAreDefault)
-            return true;
 
 
         return false;
@@ -46,28 +46,81 @@ public abstract class AccountManualJsonSerialization {
     }
 
     public static void write(final JsonWriter jsonWriter, final Account value) throws IOException {
+
+        final String _IBAN = value.getIBAN();
+        final String _currency = value.getCurrency();
+        final List<Transaction> transactions = value.getTransactions();
+
+        final boolean [] transactionIsDefault = new boolean [transactions.size()];
+        boolean allTransactionsAreDefault = true;
+        for(int i=0; i<transactions.size(); i++){
+            final Transaction t = transactions.get(i);
+            if(!TransactionManualJsonStreaming.isDefault(t)){
+                allTransactionsAreDefault = false;
+                transactionIsDefault[i] = false;
+            }
+            else
+                transactionIsDefault[i] = true;
+        }
+
+        boolean needsComma = false;
         jsonWriter.writeOpenObject();
 
-        // TODO:
-//        boolean needsComma = false;
-//
-//        final String _email = value.getEmail();
-//        if (_email != null) {
-//            if (needsComma) jsonWriter.writeComma();
-//            jsonWriter.writeRaw("\"email\":");
-//            jsonWriter.writeString(_email);
-//            needsComma = true;
-//        }
-//
-//        final String _phoneNumber = value.getPhoneNumber();
-//        if (_phoneNumber != null) {
-//            if (needsComma) jsonWriter.writeComma();
-//            jsonWriter.writeRaw("\"phoneNumber\":");
-//            jsonWriter.writeString(_phoneNumber);
-//            needsComma = true;
-//        }
+        if(!_IBAN.equals("")){
+            if(needsComma) jsonWriter.writeComma();
+            jsonWriter.writeRaw("\"IBAN\":");
+            jsonWriter.writeString(_IBAN);
+            needsComma = true;
+        }
+
+        if(!_currency.equals("")){
+            if(needsComma) jsonWriter.writeComma();
+            jsonWriter.writeRaw("\"currency\":");
+            jsonWriter.writeString(_currency);
+            needsComma = true;
+        }
+
+        if(!allTransactionsAreDefault)
+        {
+
+            if(needsComma) jsonWriter.writeComma();
+
+            jsonWriter.writeRaw("\"transactions\":");
+            jsonWriter.writeOpenArray();
+
+            needsComma = false;
+
+            for(int i=0; i<transactions.size() ; i++){
+
+                if(transactionIsDefault[i]){
+                    writeEmptyObject(jsonWriter);
+                    continue;
+                }
+
+                if(needsComma) jsonWriter.writeComma();
+
+                TransactionManualJsonStreaming.write(jsonWriter, transactions.get(i));
+
+                needsComma = true;
+            }
+
+            jsonWriter.writeCloseArray();
+
+        } else{
+            jsonWriter.writeRaw("\"transactions\":");
+            jsonWriter.writeOpenArray();
+
+            for(int i=1;i<transactions.size();i++){
+                jsonWriter.writeComma();
+                writeEmptyObject(jsonWriter);
+            }
+
+            jsonWriter.writeCloseArray();
+        }
+
 
         jsonWriter.writeCloseObject();
+
     }
 
     public static Account read(final JsonReader jsonReader) throws IOException {
@@ -122,7 +175,7 @@ public abstract class AccountManualJsonSerialization {
         {
             if(transactionNeedsComma)
                 jsonReader.assertLast(',');
-            _transactions.add(TransactionManualJsonSerialization.read(jsonReader));
+            _transactions.add(TransactionManualJsonStreaming.read(jsonReader));
             jsonReader.invalidate();
             transactionNeedsComma=true;
         }
@@ -132,4 +185,8 @@ public abstract class AccountManualJsonSerialization {
         return _transactions;
     }
 
+    private static void writeEmptyObject(final JsonWriter jsonWriter) throws IOException{
+        jsonWriter.writeOpenObject();
+        jsonWriter.writeCloseObject();
+    }
 }

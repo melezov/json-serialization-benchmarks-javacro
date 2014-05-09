@@ -17,10 +17,10 @@ import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.dslplatform.model.Accounting.Transaction;
-import com.javacro.serialization.streaming.AccountJacksonStreamingSerialization;
-import com.javacro.serialization.streaming.CustomerJacksonStreamingSerialization;
-import com.javacro.serialization.streaming.ProfileJacksonStreamingSerialization;
-import com.javacro.serialization.streaming.TransactionJacksonStreamingSerialization;
+import com.javacro.serialization.jacksonstreaming.AccountJacksonStreamingSerialization;
+import com.javacro.serialization.jacksonstreaming.CustomerJacksonStreamingSerialization;
+import com.javacro.serialization.jacksonstreaming.ProfileJacksonStreamingSerialization;
+import com.javacro.serialization.jacksonstreaming.TransactionJacksonStreamingSerialization;
 
 public class JacksonStreamingDeserializationSanityCheckTest {
 

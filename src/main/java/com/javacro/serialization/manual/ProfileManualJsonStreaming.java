@@ -1,15 +1,13 @@
-package com.javacro.serialization.streaming;
+package com.javacro.serialization.manual;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import com.javacro.dslplatform.model.Accounting.Profile;
+import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.io.jvm.json.JsonWriter;
 
-public abstract class ProfileJacksonStreamingSerialization {
+public abstract class ProfileManualJsonStreaming {
 //    @Override
     public static boolean isDefault(final Profile profile) {
         if (profile.getEmail() != null)
@@ -28,11 +26,13 @@ public abstract class ProfileJacksonStreamingSerialization {
         return sw.toString();
     }
 
-    public static Profile deserialize(final JsonFactory jsonFactory, final byte [] ib) throws IOException {
-        final JsonParser jsonParser = jsonFactory.createParser(ib);
-        final Profile profile = read(jsonParser);
-        jsonParser.close();
-        return profile;
+    public static Profile deserialize(final String inputString) throws IOException {
+        return deserialize(inputString.getBytes("UTF-8"));
+    }
+
+    public static Profile deserialize(final byte[] inputBytes) throws IOException {
+        final JsonReader jsonReader = new JsonReader(inputBytes, 0);
+        return read(jsonReader);
     }
 
     public static void write(final JsonWriter jsonWriter, final Profile value) throws IOException {
@@ -58,20 +58,29 @@ public abstract class ProfileJacksonStreamingSerialization {
         jsonWriter.writeCloseObject();
     }
 
-    public static Profile read(final JsonParser jsonParser) throws IOException {
+    public static Profile read(final JsonReader jr) throws IOException {
+        boolean needComma=false;
+        jr.assertRead('{');
+
         String _email = null;
         String _phoneNumber = null;
 
-        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
-            final String property = jsonParser.getCurrentName();
-            if ("email".equals(property)) {
-                jsonParser.nextToken();
-                _email = jsonParser.getText();
+        while (jr.read() != '}') {
+            if(needComma) jr.assertLast(',');
+
+            final String property = jr.readString();
+            jr.assertNext(':');
+
+            if (property.equals("email")) {
+                _email = jr.readString();
+                needComma=true;
+                continue;
             }
 
-            else if ("phoneNumber".equals(property)) {
-                jsonParser.nextToken();
-                _phoneNumber = jsonParser.getText();
+            if (property.equals("phoneNumber")) {
+                _phoneNumber = jr.readString();
+                needComma=true;
+                continue;
             }
         }
 

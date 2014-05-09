@@ -1,4 +1,4 @@
-package com.javacro.serialization.streaming;
+package com.javacro.serialization.jacksonstreaming;
 
 import java.io.IOException;
 import java.io.StringWriter;
@@ -6,10 +6,10 @@ import java.io.StringWriter;
 import org.joda.time.DateTime;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.javacro.dslplatform.model.Accounting.Transaction;
-import com.javacro.serialization.io.jvm.json.JsonWriter;
 
 public abstract class TransactionJacksonStreamingSerialization {
 
@@ -26,16 +26,16 @@ public abstract class TransactionJacksonStreamingSerialization {
         if (!transaction.getDescription().isEmpty())
             return false;
 
-        if (!transaction.getPaymentOn().equals(DateTime.parse("1-1-1-1T00:22")))
+        if (!transaction.getPaymentOn().equals(DateTime.parse("1-1-1T00:22")))
                 return false;
 
         return true;
     }
 
-    public static String serialize(final Transaction value) throws IOException {
+    public static String serialize(final JsonFactory jsonFactory, final Transaction value) throws IOException {
         final StringWriter sw = new StringWriter();
-        final JsonWriter jsonWriter = new JsonWriter(sw);
-        write(jsonWriter, value);
+        final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
+        write(jsonGenerator, value);
         return sw.toString();
     }
 
@@ -46,47 +46,25 @@ public abstract class TransactionJacksonStreamingSerialization {
         return transaction;
     }
 
-    public static void write(final JsonWriter jsonWriter, final Transaction _transaction) throws IOException {
+    public static void write(final JsonGenerator jsonGenerator, final Transaction value) throws IOException {
 
-        final Double _inflow = _transaction.getInflow();
-        final Double _outflow = _transaction.getOutflow();
-        final String _description = _transaction.getDescription();
-        final DateTime _paymentOn = _transaction.getPaymentOn();
+        final double inflow = value.getInflow();
+        final double outflow = value.getOutflow();
+        final String description = value.getDescription();
+        final DateTime paymentOn = value.getPaymentOn();
 
-        jsonWriter.writeOpenObject();
+        jsonGenerator.writeStartObject();
 
-        if(_inflow != 0){
-            if (needsComma) jsonWriter.writeComma();
-            jsonWriter.writeRaw("\"inflow\":");
-            jsonWriter.writeString(_inflow.toString());
-            needsComma=true;
-        }
+        if (inflow != 0)
+            jsonGenerator.writeNumberField("inflow", inflow);
+        if (outflow != 0)
+            jsonGenerator.writeNumberField("outflow", outflow);
+        if (!description.equals(""))
+            jsonGenerator.writeStringField("description", description);
+        if (!paymentOn.equals(DateTime.parse("1-1-1T00:22")))
+            jsonGenerator.writeStringField("paymentOn", paymentOn.toString());
 
-
-        if(_outflow != 0){
-            if(needsComma) jsonWriter.writeComma();
-            jsonWriter.writeRaw("\"outflow\":");
-            jsonWriter.writeString(_outflow.toString());
-            needsComma=true;
-        }
-
-        if(!_description.equals("")){
-            if(needsComma) jsonWriter.writeComma();
-            jsonWriter.writeRaw("\"description\":");
-            jsonWriter.writeString(_description.toString());
-            needsComma=true;
-        }
-
-        if(!_paymentOn.equals(DateTime.parse("1-1-1-1T00:22"))){
-            if (needsComma) jsonWriter.writeComma();
-            jsonWriter.writeRaw("\"paymentOn\":");
-            jsonWriter.writeString(_paymentOn.toString());
-            needsComma = true;
-        }
-
-        jsonWriter.writeCloseObject();
-        needsComma = true;
-
+        jsonGenerator.writeEndObject();
     }
 
     public static Transaction read(final JsonParser jsonParser) throws IOException {
