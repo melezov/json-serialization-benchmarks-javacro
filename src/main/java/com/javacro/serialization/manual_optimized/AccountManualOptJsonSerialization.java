@@ -10,7 +10,7 @@ import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Transaction;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 
-public abstract class AccountManualJsonSerialization {
+public abstract class AccountManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Account value) throws IOException {
         writer.write('{');
 		writer.write("\"IBAN\":");
@@ -26,10 +26,10 @@ public abstract class AccountManualJsonSerialization {
     		int _cnt = 0;
     		int _total = _transactions.size() - 1;
     		for (; _cnt < _total; _cnt++) {
-    			TransactionManualJsonSerialization.serialize(writer, _transactions.get(_cnt));
+    			TransactionManualOptJsonSerialization.serialize(writer, _transactions.get(_cnt));
     			writer.write(',');
     		}
-			TransactionManualJsonSerialization.serialize(writer, _transactions.get(_cnt));
+			TransactionManualOptJsonSerialization.serialize(writer, _transactions.get(_cnt));
     		writer.write(']');
     	}
     	writer.write('}');
@@ -61,12 +61,12 @@ public abstract class AccountManualJsonSerialization {
 					nextToken = ManualJson.getNextToken(reader);
 					if (nextToken != '{') throw new IOException("Expecting '{'");
 					nextToken = ManualJson.getNextToken(reader);
-					_transactions.add(TransactionManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+					_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
 					while((nextToken = ManualJson.getNextToken(reader)) == ',') {
 						nextToken = ManualJson.getNextToken(reader);
 						if (nextToken != '{') throw new IOException("Expecting '{'");
 						nextToken = ManualJson.getNextToken(reader);
-						_transactions.add(TransactionManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+						_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
 					}
 					nextToken = ManualJson.getNextToken(reader);
 					break;
@@ -101,12 +101,12 @@ public abstract class AccountManualJsonSerialization {
     					nextToken = ManualJson.getNextToken(reader);
     					if (nextToken != '{') throw new IOException("Expecting '{'");
     					nextToken = ManualJson.getNextToken(reader);
-    					_transactions.add(TransactionManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+    					_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
     					while((nextToken = ManualJson.getNextToken(reader)) == ',') {
     						nextToken = ManualJson.getNextToken(reader);
     						if (nextToken != '{') throw new IOException("Expecting '{'");
     						nextToken = ManualJson.getNextToken(reader);
-    						_transactions.add(TransactionManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+    						_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
     					}
     					nextToken = ManualJson.getNextToken(reader);
     					break;
@@ -149,12 +149,12 @@ public abstract class AccountManualJsonSerialization {
 					nextToken = reader.getNextToken();
 					if (reader.read() != '{') throw new IOException("Expecting '{'. Found: " + (char)reader.read());
 					nextToken = reader.getNextToken();
-					_transactions.add(TransactionManualJsonSerialization.deserialize(reader));
+					_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
 					while((nextToken = reader.getNextValidToken()) == ',') {
 						reader.invalidate();
 						if (reader.read() != '{') throw new IOException("Expecting '{'");
 						nextToken = reader.getNextValidToken();
-						_transactions.add(TransactionManualJsonSerialization.deserialize(reader));
+						_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
 					}
 					nextToken = reader.getNextValidToken();
 					break;
@@ -189,12 +189,12 @@ public abstract class AccountManualJsonSerialization {
     					nextToken = reader.getNextToken();
     					if (reader.read() != '{') throw new IOException("Expecting '{'. Found: " + (char)reader.read());
     					nextToken = reader.getNextToken();
-    					_transactions.add(TransactionManualJsonSerialization.deserialize(reader));
+    					_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
     					while((nextToken = reader.getNextValidToken()) == ',') {
     						reader.invalidate();
     						if (reader.read() != '{') throw new IOException("Expecting '{'");
     						nextToken = reader.getNextValidToken();
-    						_transactions.add(TransactionManualJsonSerialization.deserialize(reader));
+    						_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
     					}
     					nextToken = reader.getNextValidToken();
     					break;

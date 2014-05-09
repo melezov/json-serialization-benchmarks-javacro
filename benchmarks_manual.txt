@@ -1,0 +1,102 @@
+==========
+Byte streams: 
+
+Number of tests: 1
+
+JacksonAfterBurner (ms/tests): 		 264.00
+JacksonStreaming (ms/tests): 		 79.00
+JacksonVulgaris (ms/tests): 		 64.00
+ManualJsonStreaming (ms/tests): 	 56.00
+
+==========
+Strings: 
+
+Number of tests: 1
+
+JacksonAfterBurner (ms/tests): 		 60.00
+JacksonStreaming (ms/tests): 		 57.00
+JacksonVulgaris (ms/tests): 		 19.00
+ManualJsonStreaming (ms/tests): 	 28.00
+
+==========
+Byte streams: 
+
+Number of tests: 30
+
+JacksonAfterBurner (ms/tests): 		 5.27
+JacksonStreaming (ms/tests): 		 8.77
+JacksonVulgaris (ms/tests): 		 3.80
+ManualJsonStreaming (ms/tests): 	 3.80
+
+==========
+Strings: 
+
+Number of tests: 30
+
+JacksonAfterBurner (ms/tests): 		 4.73
+JacksonStreaming (ms/tests): 		 6.67
+JacksonVulgaris (ms/tests): 		 3.83
+ManualJsonStreaming (ms/tests): 	 3.50
+
+==========
+Byte streams: 
+
+Number of tests: 300
+
+JacksonAfterBurner (ms/tests): 		 3.88
+JacksonStreaming (ms/tests): 		 5.79
+JacksonVulgaris (ms/tests): 		 3.92
+ManualJsonStreaming (ms/tests): 	 3.43
+
+==========
+Strings: 
+
+Number of tests: 300
+
+JacksonAfterBurner (ms/tests): 		 3.71
+JacksonStreaming (ms/tests): 		 5.69
+JacksonVulgaris (ms/tests): 		 3.65
+ManualJsonStreaming (ms/tests): 	 3.57
+
+==========
+Byte streams: 
+
+Number of tests: 3000
+
+JacksonAfterBurner (ms/tests): 		 3.68
+JacksonStreaming (ms/tests): 		 5.64
+JacksonVulgaris (ms/tests): 		 3.79
+ManualJsonStreaming (ms/tests): 	 3.28
+
+==========
+Strings: 
+
+Number of tests: 3000
+
+JacksonAfterBurner (ms/tests): 		 3.68
+JacksonStreaming (ms/tests): 		 5.71
+JacksonVulgaris (ms/tests): 		 3.71
+ManualJsonStreaming (ms/tests): 	 3.52
+
+==========
+Byte streams: 
+
+Number of tests: 15000
+
+JacksonAfterBurner (ms/tests): 		 3.73
+JacksonStreaming (ms/tests): 		 5.76
+JacksonVulgaris (ms/tests): 		 3.76
+ManualJsonStreaming (ms/tests): 	 3.26
+
+==========
+Strings: 
+
+Number of tests: 15000
+
+JacksonAfterBurner (ms/tests): 		 3.65
+JacksonStreaming (ms/tests): 		 5.74
+JacksonVulgaris (ms/tests): 		 3.67
+ManualJsonStreaming (ms/tests): 	 3.54
+
+Done with work.
+

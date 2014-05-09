@@ -1,0 +1,43 @@
+Serijalizacija za mali broj transakcija
+
+=====
+Serializing objects to Json:
+# Number of tests: 1000
+# Number of transactions: 13
+=====
+JacksonAfterBurner (ms/tests):		0.40 
+JacksonStreaming (ms/tests):		0.32 
+JacksonVulgaris (ms/tests):		0.15 
+ManualStreaming (ms/tests):		0.13 
+ManualOptStreaming (ms/tests):		0.06 
+
+=====
+Totals:
+=====
+Test:	JacksonAfterBurner,	Total:	400.00	
+Test:	JacksonStreaming,	Total:	318.00	
+Test:	JacksonVulgaris,	Total:	152.00	
+Test:	ManualStreaming,	Total:	126.00	
+Test:	ManualOptStreaming,	Total:	55.00	
+
+-----------------
+
+=====
+Serializing objects to Json:
+# Number of tests: 5000
+# Number of transactions: 13
+=====
+JacksonAfterBurner (ms/tests):		0.12 
+JacksonStreaming (ms/tests):		0.12 
+JacksonVulgaris (ms/tests):		0.05 
+ManualStreaming (ms/tests):		0.09 
+ManualOptStreaming (ms/tests):		0.03 
+
+=====
+Totals:
+=====
+Test:	JacksonAfterBurner,	Total:	605.00	
+Test:	JacksonStreaming,	Total:	621.00	
+Test:	JacksonVulgaris,	Total:	235.00	
+Test:	ManualStreaming,	Total:	442.00	
+Test:	ManualOptStreaming,	Total:	143.00

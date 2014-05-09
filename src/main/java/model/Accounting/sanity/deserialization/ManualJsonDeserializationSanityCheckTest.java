@@ -1,4 +1,4 @@
-package model.Accounting.sanity;
+package model.Accounting.sanity.deserialization;
 
 import java.io.IOException;
 
@@ -14,10 +14,10 @@ import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.dslplatform.model.Accounting.Transaction;
-import com.javacro.serialization.manual.AccountManualJsonSerialization;
-import com.javacro.serialization.manual.CustomerManualJsonSerialization;
-import com.javacro.serialization.manual.ProfileManualJsonSerialization;
-import com.javacro.serialization.manual.TransactionManualJsonSerialization;
+import com.javacro.serialization.manual.AccountManualJsonStreaming;
+import com.javacro.serialization.manual.CustomerManualJsonStreaming;
+import com.javacro.serialization.manual.ProfileManualJsonStreaming;
+import com.javacro.serialization.manual.TransactionManualJsonStreaming;
 
 public class ManualJsonDeserializationSanityCheckTest {
 
@@ -37,7 +37,7 @@ public class ManualJsonDeserializationSanityCheckTest {
 
         for (final String useCase : TestCases.getTransactionUseCases()) {
             System.out.println("Transaction; Testing for test case: " + useCase);
-            final Transaction transaction = TransactionManualJsonSerialization.deserialize(useCase.getBytes("UTF-8"));
+            final Transaction transaction = TransactionManualJsonStreaming.deserialize(useCase.getBytes("UTF-8"));
 
             System.out.println(transaction.toString().replace(", ",","));
         }
@@ -49,7 +49,7 @@ public class ManualJsonDeserializationSanityCheckTest {
         for (final String useCase : TestCases.getProfileUseCases()) {
             System.out.println("Profile; Testing for test case: " + useCase);
 
-            final Profile profile = ProfileManualJsonSerialization.deserialize(useCase.getBytes("UTF-8"));
+            final Profile profile = ProfileManualJsonStreaming.deserialize(useCase.getBytes("UTF-8"));
 
             System.out.println(profile.toString().replace(", ",","));
         }
@@ -61,7 +61,7 @@ public class ManualJsonDeserializationSanityCheckTest {
         for (final String useCase : TestCases.getAccountUseCases()) {
             System.out.println("Account; Testing for test case: " + useCase);
 
-            final Account account = AccountManualJsonSerialization.deserialize(useCase.getBytes("UTF-8"));
+            final Account account = AccountManualJsonStreaming.deserialize(useCase.getBytes("UTF-8"));
 
             System.out.println(account.toString().replace(", ",","));
         }
@@ -73,7 +73,7 @@ public class ManualJsonDeserializationSanityCheckTest {
         for (final String useCase : TestCases.getCustomerUseCases()) {
             System.out.println("Customer; Testing for test case: " + useCase);
 
-            final Customer customer = CustomerManualJsonSerialization.deserialize(useCase.getBytes("UTF-8"));
+            final Customer customer = CustomerManualJsonStreaming.deserialize(useCase.getBytes("UTF-8"));
 
             System.out.println(customer.toString().replace(", ",","));
         }

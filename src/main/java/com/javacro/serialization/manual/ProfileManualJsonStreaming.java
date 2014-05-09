@@ -7,7 +7,7 @@ import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.io.jvm.json.JsonWriter;
 
-public abstract class ProfileManualJsonSerialization {
+public abstract class ProfileManualJsonStreaming {
 //    @Override
     public static boolean isDefault(final Profile profile) {
         if (profile.getEmail() != null)
@@ -24,6 +24,10 @@ public abstract class ProfileManualJsonSerialization {
         final JsonWriter jsonWriter = new JsonWriter(sw);
         write(jsonWriter, value);
         return sw.toString();
+    }
+
+    public static Profile deserialize(final String inputString) throws IOException {
+        return deserialize(inputString.getBytes("UTF-8"));
     }
 
     public static Profile deserialize(final byte[] inputBytes) throws IOException {
@@ -67,28 +71,17 @@ public abstract class ProfileManualJsonSerialization {
             final String property = jr.readString();
             jr.assertNext(':');
 
-            switch(property.charAt(0)){
-                case 'e': //email
-                    _email = jr.readString();
-                    needComma=true;
-                    continue;
-                case 'p': //phone number
-                    _phoneNumber = jr.readString();
-                    needComma=true;
-                    continue;
+            if (property.equals("email")) {
+                _email = jr.readString();
+                needComma=true;
+                continue;
             }
 
-//            if (property.equals("email")) {
-//                _email = jr.readString();
-//                needComma=true;
-//                continue;
-//            }
-//
-//            if (property.equals("phoneNumber")) {
-//                _phoneNumber = jr.readString();
-//                needComma=true;
-//                continue;
-//            }
+            if (property.equals("phoneNumber")) {
+                _phoneNumber = jr.readString();
+                needComma=true;
+                continue;
+            }
         }
 
         return new Profile(

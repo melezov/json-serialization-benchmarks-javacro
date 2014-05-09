@@ -1,13 +1,13 @@
-package com.javacro.serialization.streaming;
+package com.javacro.serialization.jacksonstreaming;
 
 import java.io.IOException;
 import java.io.StringWriter;
 
 import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.javacro.dslplatform.model.Accounting.Profile;
-import com.javacro.serialization.io.jvm.json.JsonWriter;
 
 public abstract class ProfileJacksonStreamingSerialization {
 //    @Override
@@ -21,10 +21,11 @@ public abstract class ProfileJacksonStreamingSerialization {
         return true;
     }
 
-    public static String serialize(final Profile value) throws IOException {
+    public static String serialize(final JsonFactory jsonFactory, final Profile value) throws IOException {
         final StringWriter sw = new StringWriter();
-        final JsonWriter jsonWriter = new JsonWriter(sw);
-        write(jsonWriter, value);
+        final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
+        write(jsonGenerator, value);
+        jsonGenerator.close();
         return sw.toString();
     }
 
@@ -35,27 +36,20 @@ public abstract class ProfileJacksonStreamingSerialization {
         return profile;
     }
 
-    public static void write(final JsonWriter jsonWriter, final Profile value) throws IOException {
-        jsonWriter.writeOpenObject();
-        boolean needsComma = false;
+    public static void write(final JsonGenerator jsonGenerator, final Profile value) throws IOException {
 
         final String _email = value.getEmail();
-        if (_email != null) {
-            if (needsComma) jsonWriter.writeComma();
-            jsonWriter.writeRaw("\"email\":");
-            jsonWriter.writeString(_email);
-            needsComma = true;
-        }
-
         final String _phoneNumber = value.getPhoneNumber();
-        if (_phoneNumber != null) {
-            if (needsComma) jsonWriter.writeComma();
-            jsonWriter.writeRaw("\"phoneNumber\":");
-            jsonWriter.writeString(_phoneNumber);
-            needsComma = true;
-        }
 
-        jsonWriter.writeCloseObject();
+        jsonGenerator.writeStartObject();
+
+        if (_email != null)
+            jsonGenerator.writeStringField("email", _email);
+
+        if (_phoneNumber != null)
+            jsonGenerator.writeStringField("phoneNumber", _phoneNumber);
+
+        jsonGenerator.writeEndObject();
     }
 
     public static Profile read(final JsonParser jsonParser) throws IOException {
