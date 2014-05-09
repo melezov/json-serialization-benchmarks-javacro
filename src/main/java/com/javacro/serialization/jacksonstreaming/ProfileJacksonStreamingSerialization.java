@@ -25,6 +25,7 @@ public abstract class ProfileJacksonStreamingSerialization {
         final StringWriter sw = new StringWriter();
         final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
         write(jsonGenerator, value);
+        jsonGenerator.close();
         return sw.toString();
     }
 

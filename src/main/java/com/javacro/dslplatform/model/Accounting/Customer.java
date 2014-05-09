@@ -5,18 +5,19 @@ import java.util.UUID;
 public class Customer implements java.io.Serializable,
         com.dslplatform.patterns.AggregateRoot {
     public Customer() {
-    	this.URI = UUID.randomUUID().toString();
+        this.URI = UUID.randomUUID().toString();
         this.id = 0L;
         this.name = "";
         this.profile = new com.javacro.dslplatform.model.Accounting.Profile();
     }
-    
+
     private transient com.dslplatform.patterns.ServiceLocator _serviceLocator;
 
     private String URI;
-    
+
     public boolean isNewAggregate() { return _serviceLocator == null; }
 
+    @Override
     @com.fasterxml.jackson.annotation.JsonProperty("URI")
     public String getURI() {
         return this.URI;
@@ -51,6 +52,7 @@ public class Customer implements java.io.Serializable,
             final String name,
             final com.javacro.dslplatform.model.Accounting.Profile profile,
             final java.util.List<com.javacro.dslplatform.model.Accounting.Account> accounts) {
+        this.URI = UUID.randomUUID().toString();
         setId(id);
         setName(name);
         setProfile(profile);
@@ -265,14 +267,14 @@ public class Customer implements java.io.Serializable,
     }
 
     public Customer create() throws java.io.IOException {
-    	return create(com.dslplatform.client.Bootstrap.getLocator());
+        return create(com.dslplatform.client.Bootstrap.getLocator());
     }
 
     public Customer create(com.dslplatform.patterns.ServiceLocator locator) throws java.io.IOException {
         final Customer result;
         if (locator == null) locator = com.dslplatform.client.Bootstrap.getLocator();
         try {
-        	com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class); 
+            final com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class);
             result = _proxy.create(this).get();
         } catch (final InterruptedException e) {
             throw new java.io.IOException(e);
@@ -285,10 +287,10 @@ public class Customer implements java.io.Serializable,
     }
 
     public Customer update() throws java.io.IOException {
-    	if (_serviceLocator == null) throw new java.io.IOException("Newly created objects can't be updated");
+        if (_serviceLocator == null) throw new java.io.IOException("Newly created objects can't be updated");
         final Customer result;
         try {
-        	com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class); 
+            final com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class);
             result = _proxy.update(this).get();
         } catch (final InterruptedException e) {
             throw new java.io.IOException(e);
@@ -300,9 +302,9 @@ public class Customer implements java.io.Serializable,
     }
 
     public Customer delete() throws java.io.IOException {
-    	if (_serviceLocator == null) throw new java.io.IOException("Newly created objects can't be deleted");
+        if (_serviceLocator == null) throw new java.io.IOException("Newly created objects can't be deleted");
         try {
-        	com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class); 
+            final com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class);
             return _proxy.delete(Customer.class, URI).get();
         } catch (final InterruptedException e) {
             throw new java.io.IOException(e);

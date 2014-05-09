@@ -34,6 +34,7 @@ public abstract class AccountJacksonStreamingSerialization {
         final StringWriter sw = new StringWriter();
         final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
         write(jsonGenerator, value);
+        jsonGenerator.close();
         return sw.toString();
     }
 
@@ -66,6 +67,7 @@ public abstract class AccountJacksonStreamingSerialization {
 
         if (!currency.equals("")) jsonGenerator.writeStringField("currency", currency);
 
+        jsonGenerator.writeFieldName("transactions");
         if (transactions.size() > 0) {
             jsonGenerator.writeStartArray();
 

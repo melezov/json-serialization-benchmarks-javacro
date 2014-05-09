@@ -13,6 +13,10 @@ import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.dslplatform.model.Accounting.Transaction;
+import com.javacro.serialization.jacksonstreaming.AccountJacksonStreamingSerialization;
+import com.javacro.serialization.jacksonstreaming.CustomerJacksonStreamingSerialization;
+import com.javacro.serialization.jacksonstreaming.ProfileJacksonStreamingSerialization;
+import com.javacro.serialization.jacksonstreaming.TransactionJacksonStreamingSerialization;
 
 public class JacksonStreamingSerializationSanityCheckTest {
 
@@ -34,7 +38,8 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("Testing serialization for Transaction: ");
         for(final Transaction c : TestCases.getTransactionStubs()){
             System.out.println(c.toString());
-//            System.out.println(TransactionJacksonStreamingSerialization.serialize(c));
+            System.out.println("Serialization output: ");
+            System.out.println(TransactionJacksonStreamingSerialization.serialize(jsonFactory, c));
         }
     }
 
@@ -44,7 +49,8 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("Testing serialization for Profile: ");
         for(final Profile c : TestCases.getProfileStubs()){
             System.out.println(c.toString());
-//            System.out.println(ProfileJacksonStreamingSerialization.serialize(c));
+            System.out.println("Serialization output: ");
+            System.out.println(ProfileJacksonStreamingSerialization.serialize(jsonFactory, c));
         }
     }
 
@@ -54,7 +60,10 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("Testing serialization for Account: ");
         for(final Account c : TestCases.getAccountStubs()){
             System.out.println(c.toString());
-//            System.out.println(AccountJacksonStreamingSerialization.serialize(c));
+
+            final String out = AccountJacksonStreamingSerialization.serialize(jsonFactory, c);
+            System.out.println("Serialization done, output: ");
+            System.out.println(out);
         }
     }
 
@@ -65,7 +74,8 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("Testing serialization for Customer: ");
         for(final Customer c : TestCases.getCustomerStubs()){
             System.out.println(c.toString());
-//            System.out.println(CustomerJacksonStreamingSerialization.serialize(c));
+            System.out.println("Serialization output: ");
+            System.out.println(CustomerJacksonStreamingSerialization.serialize(jsonFactory, c));
         }
     }
 

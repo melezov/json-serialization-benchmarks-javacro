@@ -21,18 +21,14 @@ public abstract class CustomerJacksonStreamingSerialization {
 
     public static boolean isDefault(final Customer customer) {
 
-        if(customer.getId()!=0)
-            return false;
+        if (customer.getId() != 0) return false;
 
-        if(!customer.getName().isEmpty())
-            return false;
+        if (!customer.getName().isEmpty()) return false;
 
-        if(ProfileJacksonStreamingSerialization.isDefault(customer.getProfile()))
-            return false;
+        if (ProfileJacksonStreamingSerialization.isDefault(customer.getProfile())) return false;
 
-        for(final Account account : customer.getAccounts()){
-            if(!AccountJacksonStreamingSerialization.isDefault(account))
-                    return false;
+        for (final Account account : customer.getAccounts()) {
+            if (!AccountJacksonStreamingSerialization.isDefault(account)) return false;
         }
 
         return true;
@@ -42,6 +38,7 @@ public abstract class CustomerJacksonStreamingSerialization {
         final StringWriter sw = new StringWriter();
         final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
         write(jsonGenerator, value);
+        jsonGenerator.close();
         return sw.toString();
     }
 
@@ -65,34 +62,43 @@ public abstract class CustomerJacksonStreamingSerialization {
         final Profile profile = customer.getProfile();
         final List<Account> accounts = customer.getAccounts();
 
-        final boolean[] accountIsDefault = new boolean[accounts.size()];
+        final boolean[] accountIsDefault = new boolean[accounts!=null ? accounts.size() : 0];
         boolean allAccountsAreDefault = true;
-        for (int i = 0; i < accounts.size(); i++) {
-            final Account t = accounts.get(i);
-            if (!AccountManualJsonStreaming.isDefault(t)) {
-                allAccountsAreDefault = false;
-                accountIsDefault[i] = false;
-            } else accountIsDefault[i] = true;
+        if (accounts != null) {
+            for (int i = 0; i < accounts.size(); i++) {
+                final Account t = accounts.get(i);
+                if (!AccountManualJsonStreaming.isDefault(t)) {
+                    allAccountsAreDefault = false;
+                    accountIsDefault[i] = false;
+                } else accountIsDefault[i] = true;
+            }
         }
 
         jsonGenerator.writeStartObject();
 
-        if(id != 0) jsonGenerator.writeNumberField("id", id);
-        if(!name.equals("")) jsonGenerator.writeStringField("name", name);
+        if (id != 0) jsonGenerator.writeNumberField("id", id);
+        if (!name.equals("")) jsonGenerator.writeStringField("name", name);
 
-        if(!ProfileJacksonStreamingSerialization.isDefault(profile))
+        if (!ProfileJacksonStreamingSerialization.isDefault(profile)){
+            jsonGenerator.writeFieldName("profile");
             ProfileJacksonStreamingSerialization.write(jsonGenerator, profile);
+        }
 
-        if(!allAccountsAreDefault){
-            for (int i = 0; i < accounts.size(); i++) {
-                if (accountIsDefault[i]) {
-                    writeEmptyObject(jsonGenerator);
-                } else {
-                    AccountJacksonStreamingSerialization.write(jsonGenerator, accounts.get(i));
+        if (accounts != null) {
+            jsonGenerator.writeFieldName("accounts");
+            jsonGenerator.writeStartArray();
+            if (!allAccountsAreDefault) {
+                for (int i = 0; i < accounts.size(); i++) {
+                    if (accountIsDefault[i]) {
+                        writeEmptyObject(jsonGenerator);
+                    } else {
+                        AccountJacksonStreamingSerialization.write(jsonGenerator, accounts.get(i));
+                    }
                 }
+            } else {
+                writeEmptyObjects(accounts.size(), jsonGenerator);
             }
-        }else{
-            writeEmptyObjects(accounts.size(), jsonGenerator);
+            jsonGenerator.writeEndArray();
         }
 
         jsonGenerator.writeEndObject();
@@ -109,25 +115,22 @@ public abstract class CustomerJacksonStreamingSerialization {
             if ("id".equals(property)) {
                 jsonParser.nextToken();
                 _id = jsonParser.getLongValue();
-            }
-            else if ("name".equals(property)) {
+            } else if ("name".equals(property)) {
                 jsonParser.nextToken();
                 _name = jsonParser.getText();
-            }
-            else if ("profile".equals(property)) {
+            } else if ("profile".equals(property)) {
                 _profile = ProfileJacksonStreamingSerialization.read(jsonParser);
-            }
-            else if ("accounts".equals(property)) {
+            } else if ("accounts".equals(property)) {
                 _accounts = new ArrayList<Account>();
-                while(jsonParser.nextToken() != JsonToken.END_ARRAY){
+                while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
                     _accounts.add(AccountJacksonStreamingSerialization.read(jsonParser));
                 }
             }
         }
 
-        if(_name == null) _name = "";
-        if(_profile == null) _profile = new Profile();
-        if(_accounts == null) _accounts = new ArrayList<Account>();
+        if (_name == null) _name = "";
+        if (_profile == null) _profile = new Profile();
+        if (_accounts == null) _accounts = new ArrayList<Account>();
 
         return new Customer(_id, _name, _profile, _accounts);
     }

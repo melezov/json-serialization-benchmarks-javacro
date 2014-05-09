@@ -164,7 +164,8 @@ public class TestCases {
 
         stubs.add(new Customer());
         stubs.add(new Customer(5, "Mirko", getProfileStubs().get(0), getAccountStubs().subList(0, 1)));
-        stubs.add(new Customer(5, "Mirko", getProfileStubs().get(1), getAccountStubs()));
+        stubs.add(new Customer(5, "Slavko", getProfileStubs().get(1), getAccountStubs()));
+        stubs.add(new Customer(5, "Marko", getProfileStubs().get(2), getAccountStubs()));
 
         return stubs;
     }
