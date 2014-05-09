@@ -1,23 +1,21 @@
 package com.javacro.dslplatform.model.Accounting;
 
+import java.util.UUID;
+
 public class Customer implements java.io.Serializable,
         com.dslplatform.patterns.AggregateRoot {
     public Customer() {
-        _serviceLocator = com.dslplatform.client.Bootstrap.getLocator();
-        _domainProxy = _serviceLocator
-                .resolve(com.dslplatform.client.DomainProxy.class);
-        _crudProxy = _serviceLocator
-                .resolve(com.dslplatform.client.CrudProxy.class);
+    	this.URI = UUID.randomUUID().toString();
         this.id = 0L;
         this.name = "";
         this.profile = new com.javacro.dslplatform.model.Accounting.Profile();
     }
-
-    private transient final com.dslplatform.patterns.ServiceLocator _serviceLocator;
-    private transient final com.dslplatform.client.DomainProxy _domainProxy;
-    private transient final com.dslplatform.client.CrudProxy _crudProxy;
+    
+    private transient com.dslplatform.patterns.ServiceLocator _serviceLocator;
 
     private String URI;
+    
+    public boolean isNewAggregate() { return _serviceLocator == null; }
 
     @com.fasterxml.jackson.annotation.JsonProperty("URI")
     public String getURI() {
@@ -26,7 +24,7 @@ public class Customer implements java.io.Serializable,
 
     @Override
     public int hashCode() {
-        return URI != null ? URI.hashCode() : super.hashCode();
+        return URI.hashCode();
     }
 
     @Override
@@ -42,7 +40,7 @@ public class Customer implements java.io.Serializable,
 
     @Override
     public String toString() {
-        return URI != null ? "Customer(" + URI + ')' : "new Customer("
+        return _serviceLocator != null ? "Customer(" + URI + ')' : "new Customer("
                 + super.hashCode() + ')';
     }
 
@@ -53,11 +51,6 @@ public class Customer implements java.io.Serializable,
             final String name,
             final com.javacro.dslplatform.model.Accounting.Profile profile,
             final java.util.List<com.javacro.dslplatform.model.Accounting.Account> accounts) {
-        _serviceLocator = com.dslplatform.client.Bootstrap.getLocator();
-        _domainProxy = _serviceLocator
-                .resolve(com.dslplatform.client.DomainProxy.class);
-        _crudProxy = _serviceLocator
-                .resolve(com.dslplatform.client.CrudProxy.class);
         setId(id);
         setName(name);
         setProfile(profile);
@@ -73,10 +66,6 @@ public class Customer implements java.io.Serializable,
             @com.fasterxml.jackson.annotation.JsonProperty("profile") final com.javacro.dslplatform.model.Accounting.Profile profile,
             @com.fasterxml.jackson.annotation.JsonProperty("accounts") final java.util.List<com.javacro.dslplatform.model.Accounting.Account> accounts) {
         this._serviceLocator = _serviceLocator;
-        this._domainProxy = _serviceLocator
-                .resolve(com.dslplatform.client.DomainProxy.class);
-        this._crudProxy = _serviceLocator
-                .resolve(com.dslplatform.client.CrudProxy.class);
         this.URI = URI;
         this.id = id;
         this.name = name == null ? "" : name;
@@ -84,6 +73,22 @@ public class Customer implements java.io.Serializable,
                 ? new com.javacro.dslplatform.model.Accounting.Profile()
                 : profile;
         this.accounts = accounts;
+    }
+
+    public Customer(
+            final String URI,
+            final long id,
+            final String name,
+            final com.javacro.dslplatform.model.Accounting.Profile profile,
+            final java.util.List<com.javacro.dslplatform.model.Accounting.Account> accounts,
+            final com.dslplatform.patterns.ServiceLocator _serviceLocator) {
+        this._serviceLocator = _serviceLocator;
+        this.URI = URI;
+        this.id = id;
+        this.name = name;
+        this.profile = profile;
+        this.accounts = accounts;
+        com.javacro.dslplatform.model.Guards.checkNulls(accounts);
     }
 
     public static Customer find(final String uri) throws java.io.IOException {
@@ -259,12 +264,32 @@ public class Customer implements java.io.Serializable,
         this.accounts = result.accounts;
     }
 
-    public Customer persist() throws java.io.IOException {
+    public Customer create() throws java.io.IOException {
+    	return create(com.dslplatform.client.Bootstrap.getLocator());
+    }
+
+    public Customer create(com.dslplatform.patterns.ServiceLocator locator) throws java.io.IOException {
+        final Customer result;
+        if (locator == null) locator = com.dslplatform.client.Bootstrap.getLocator();
+        try {
+        	com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class); 
+            result = _proxy.create(this).get();
+        } catch (final InterruptedException e) {
+            throw new java.io.IOException(e);
+        } catch (final java.util.concurrent.ExecutionException e) {
+            throw new java.io.IOException(e);
+        }
+        this._serviceLocator = locator;
+        this.updateWithAnother(result);
+        return this;
+    }
+
+    public Customer update() throws java.io.IOException {
+    	if (_serviceLocator == null) throw new java.io.IOException("Newly created objects can't be updated");
         final Customer result;
         try {
-            result = this.URI == null
-                    ? _crudProxy.create(this).get()
-                    : _crudProxy.update(this).get();
+        	com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class); 
+            result = _proxy.update(this).get();
         } catch (final InterruptedException e) {
             throw new java.io.IOException(e);
         } catch (final java.util.concurrent.ExecutionException e) {
@@ -275,8 +300,10 @@ public class Customer implements java.io.Serializable,
     }
 
     public Customer delete() throws java.io.IOException {
+    	if (_serviceLocator == null) throw new java.io.IOException("Newly created objects can't be deleted");
         try {
-            return _crudProxy.delete(Customer.class, URI).get();
+        	com.dslplatform.client.CrudProxy _proxy = _serviceLocator.resolve(com.dslplatform.client.CrudProxy.class); 
+            return _proxy.delete(Customer.class, URI).get();
         } catch (final InterruptedException e) {
             throw new java.io.IOException(e);
         } catch (final java.util.concurrent.ExecutionException e) {

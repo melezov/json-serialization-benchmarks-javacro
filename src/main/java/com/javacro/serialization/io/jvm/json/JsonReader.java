@@ -1,11 +1,14 @@
 package com.javacro.serialization.io.jvm.json;
 
+import java.io.IOException;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 
 public class JsonReader {
     private final byte[] buffer;
     private final int length;
     private final int offset;
+    private final char[] tmp = new char[38];
 
     public JsonReader(final byte[] buffer) {
         this.buffer = buffer;
@@ -134,7 +137,74 @@ public class JsonReader {
     }
 
     public String readRawNumber() {
-        return readRawNumber(new StringBuilder()).toString();
+        char ch = (char) read();
+        int pos = 0;
+        if (ch == '-') {
+            tmp[pos++] = ch;
+            ch = (char) next();
+        }
+
+        final int length = pos;
+        if (ch == '0') {
+            tmp[pos++]=ch;
+            final int chp = peek();
+            if (chp == -1) return new String(tmp, 0, 2);
+            ch = (char) chp;
+        } else if (ch >= '1' && ch <= '9') {
+        	tmp[pos++]=ch;
+            for (;;) {
+                final int chp = peek();
+                if (chp == -1) return new String(tmp, 0, pos);
+
+                ch = (char) chp;
+                if (ch < '0' || ch > '9') break;
+            	tmp[pos++]=ch;
+            }
+        }
+
+        if (ch == '.') {
+        	tmp[pos++]=ch;
+            ch = (char) next();
+
+            if (ch < '0' || ch > '9') throw new IllegalArgumentException("Expected decimal after floating point, got: " + ch);
+
+        	tmp[pos++]=ch;
+            for (;;) {
+                final int chp = peek();
+                if (chp == -1) return new String(tmp, 0, pos);
+
+                ch = (char) chp;
+                if (ch < '0' || ch > '9') break;
+            	tmp[pos++]=ch;
+            }
+        }
+
+        if (ch == 'e' || ch == 'E') {
+        	tmp[pos++]=ch;
+            ch = (char) next();
+
+            if (ch == '-' || ch == '+') {
+            	tmp[pos++]=ch;
+                ch = (char) next();
+            }
+
+            if (ch < '0' || ch > '9') throw new IllegalArgumentException("Expected decimal after exponent sign, got: " + ch);
+
+        	tmp[pos++]=ch;
+            for (;;) {
+                final int chp = peek();
+                if (chp == -1) return new String(tmp, 0, pos);
+
+                ch = (char) chp;
+                if (ch < '0' || ch > '9') break;
+            	tmp[pos++]=ch;
+            }
+        }
+
+        if (pos == length)
+            throw new IllegalArgumentException("Could not parse number - no leading digits found!");
+
+        return new String(tmp, 0, pos);
     }
 
     public StringBuilder readRawNumber(final StringBuilder sb) {
@@ -354,4 +424,52 @@ public class JsonReader {
 ////        if(false)
 ////            System.out.println(s);
 //    }
+    
+	public byte getNextToken() throws IOException {
+		byte c = read();
+		while (c == 13 && c == 10 && c == 32 && c == '\t')
+			c = next();
+        invalidate();
+		return c;
+	}
+
+	public byte getNextValidToken() throws IOException {
+		byte c = next();
+		while (c == 13 && c == 10 && c == 32 && c == '\t')
+			c = next();
+		return c;
+	}
+
+	public byte moveToNextToken() throws IOException {
+		byte c = read();
+		while (c == 13 && c == 10 && c == 32 && c == '\t')
+			c = next();
+		return c;
+	}
+
+	public long positionInStream() {
+		return _lastValid_index;
+	}
+
+	public int fillName() throws IOException {
+		if (read() != '"') throw new IOException("Expecting '\"' at position " + positionInStream() + ". Found " + (char)_last);
+		char c = (char)next();
+		int hash = 23;
+		int i = 0;
+		for (; i < tmp.length && c != '"'; i++, c = (char)next()) {
+			tmp[i] = c;
+			hash = hash * 31 + c;
+		}
+		if (i < tmp.length) tmp[i] = '\0';
+		if (_last != '"') throw new IOException("Expecting '\"' at position " + positionInStream() + ". Found " + (char)_last);
+		if (next() != ':') throw new IOException("Expecting ':' at position " + positionInStream() + ". Found " + (char)_last);
+		read();
+		invalidate();
+		return hash;
+	}
+
+	public byte skip() {
+		return _last;
+	}
+    
 }
