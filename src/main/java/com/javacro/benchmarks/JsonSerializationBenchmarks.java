@@ -2,6 +2,7 @@ package com.javacro.benchmarks;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.concurrent.TimeUnit;
 
@@ -20,6 +21,7 @@ import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.serialization.afterburner.JacksonAfterburnerSerialization;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.manual.CustomerManualJsonSerialization;
+import com.javacro.serialization.manual_optimized.CustomerManualOptimizedJsonSerialization;
 import com.javacro.serialization.streaming.CustomerJacksonStreamingSerialization;
 
 @State(Scope.Thread)
@@ -42,6 +44,7 @@ public class JsonSerializationBenchmarks {
     private String useCase;
 
     private JsonReader jsonManualReader;
+    private StringReader stringReader;
 
     public static void main(final String[] args) {
 
@@ -50,11 +53,12 @@ public class JsonSerializationBenchmarks {
         try {
             benchmark.buildUp();
 
-            final int NUM_TESTS = 3000;
+            final int NUM_TESTS = 10000;
 
             System.out.println("Number of tests: " + NUM_TESTS);
+            int test = 5;
 
-            {
+            if(test == 1){
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -63,9 +67,10 @@ public class JsonSerializationBenchmarks {
                 final long endAt = System.currentTimeMillis();
                 sumaSumarum += endAt - startAt;
                 System.out.println("JacksonAfterBurner (ms/tests): " + sumaSumarum / NUM_TESTS);
+                System.out.println("JacksonAfterBurner (total): " + sumaSumarum);
             }
 
-            {
+            if(test == 2){
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -74,9 +79,10 @@ public class JsonSerializationBenchmarks {
                 final long endAt = System.currentTimeMillis();
                 sumaSumarum += endAt - startAt;
                 System.out.println("JacksonStreaming (ms/tests): " + sumaSumarum / NUM_TESTS);
+                System.out.println("JacksonStreaming (total): " + sumaSumarum);
             }
 
-            {
+            if(test == 3){
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -85,17 +91,30 @@ public class JsonSerializationBenchmarks {
                 final long endAt = System.currentTimeMillis();
                 sumaSumarum += endAt - startAt;
                 System.out.println("JacksonVulgaris (ms/tests): " + sumaSumarum / NUM_TESTS);
+                System.out.println("JacksonVulgaris (total): " + sumaSumarum);
             }
 
-            {
+            if(test == 4){
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeManualJsonStreaming();;
+                    benchmark.timeManualJsonStreaming();
                 }
                 final long endAt = System.currentTimeMillis();
                 sumaSumarum += endAt - startAt;
                 System.out.println("ManualJsonStreaming (ms/tests): " + sumaSumarum / NUM_TESTS);
+                System.out.println("ManualJsonStreaming (total): " + sumaSumarum);
+            }
+
+            if(test == 5){
+                final long startAt = System.currentTimeMillis();
+                for (int i = 0; i < NUM_TESTS; i++) {
+                    benchmark.timeManualOptimizedJsonStreaming();
+                }
+                final long endAt = System.currentTimeMillis();
+                double sumaSumarum = endAt - startAt; 
+                System.out.println("ManualOptimizedJsonStreaming (ms/tests): " + sumaSumarum / NUM_TESTS);
+                System.out.println("ManualOptimizedJsonStreaming (total): " + sumaSumarum);
             }
 
         } catch (final Exception e) {
@@ -114,6 +133,7 @@ public class JsonSerializationBenchmarks {
         this.useCaseInputStream = new ByteArrayInputStream(useCaseBytes);
 
         this.jsonManualReader = new JsonReader(useCaseBytes);
+        this.stringReader = new StringReader(useCase);
     }
 
     @GenerateMicroBenchmark
@@ -128,17 +148,23 @@ public class JsonSerializationBenchmarks {
 
     @GenerateMicroBenchmark
     public void timeJacksonAfterBurner() throws IOException {
-        final Customer customer = afterburnerSerialization.deserialize(customerType, useCaseBytes);
+        final Customer customer = afterburnerSerialization.deserialize(customerType, useCase);
     }
 
     @GenerateMicroBenchmark
     public void timeJacksonStreaming() throws IOException {
-        final Customer customer = CustomerJacksonStreamingSerialization.deserialize(jsonFactory, useCaseBytes);
+        final Customer customer = CustomerJacksonStreamingSerialization.deserialize(jsonFactory, useCase);
     }
 
     @GenerateMicroBenchmark
     public void timeManualJsonStreaming() throws IOException {
         final Customer customer = CustomerManualJsonSerialization.deserialize(useCaseBytes);
+        //final Customer customer = CustomerManualJsonSerialization.read(jsonManualReader);
+    }
+
+    @GenerateMicroBenchmark
+    public void timeManualOptimizedJsonStreaming() throws IOException {
+        final Customer customer = CustomerManualOptimizedJsonSerialization.deserializeWith(useCaseBytes);
         //final Customer customer = CustomerManualJsonSerialization.read(jsonManualReader);
     }
 
