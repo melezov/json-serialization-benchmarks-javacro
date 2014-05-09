@@ -13,25 +13,6 @@ import com.javacro.dslplatform.model.Accounting.Transaction;
 
 public abstract class TransactionJacksonStreamingSerialization {
 
-    private static boolean needsComma = false;
-
-//    @Override
-    public static boolean isDefault(final Transaction transaction) {
-        if (transaction.getInflow() != 0)
-            return false;
-
-        if (transaction.getOutflow() != 0)
-            return false;
-
-        if (!transaction.getDescription().isEmpty())
-            return false;
-
-        if (!transaction.getPaymentOn().equals(DateTime.parse("1-1-1T00:22")))
-                return false;
-
-        return true;
-    }
-
     public static String serialize(final JsonFactory jsonFactory, final Transaction value) throws IOException {
         final StringWriter sw = new StringWriter();
         final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
@@ -46,6 +27,8 @@ public abstract class TransactionJacksonStreamingSerialization {
         jsonParser.close();
         return transaction;
     }
+    
+    private static DateTime minDate = DateTime.parse("1-1-1T00:22");
 
     public static void write(final JsonGenerator jsonGenerator, final Transaction value) throws IOException {
 
@@ -62,7 +45,7 @@ public abstract class TransactionJacksonStreamingSerialization {
             jsonGenerator.writeNumberField("outflow", outflow);
         if (!description.equals(""))
             jsonGenerator.writeStringField("description", description);
-        if (!paymentOn.equals(DateTime.parse("1-1-1T00:22")))
+        //if (!paymentOn.equals(minDate))
             jsonGenerator.writeStringField("paymentOn", paymentOn.toString());
 
         jsonGenerator.writeEndObject();
