@@ -28,7 +28,7 @@ public abstract class TransactionJacksonStreamingSerialization {
         return transaction;
     }
     
-    private static DateTime minDate = DateTime.parse("1-1-1T00:22");
+    //private static DateTime minDate = DateTime.parse("1-1-1T00:22");
 
     public static void write(final JsonGenerator jsonGenerator, final Transaction value) throws IOException {
 
@@ -50,12 +50,13 @@ public abstract class TransactionJacksonStreamingSerialization {
 
         jsonGenerator.writeEndObject();
     }
+    private static DateTime minDate = DateTime.parse("1-1-1T12:34");
 
     public static Transaction read(final JsonParser jsonParser) throws IOException {
         double _inflow = 0.0;
         double _outflow = 0.0;
-        String _description = null;
-        DateTime _paymentOn = null;
+        String _description = "";
+        DateTime _paymentOn = minDate;
 
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
             final String property = jsonParser.getCurrentName();
@@ -82,13 +83,10 @@ public abstract class TransactionJacksonStreamingSerialization {
             }
         }
 
-        if(_paymentOn == null)
-            _paymentOn = DateTime.parse("1-1-1T12:34");
-
         return new Transaction(
                 _inflow,
                 _outflow,
-                _description == null ? "" : _description,
-                _paymentOn == null ? DateTime.now() : _paymentOn);
+                _description,
+                _paymentOn);
     }
 }

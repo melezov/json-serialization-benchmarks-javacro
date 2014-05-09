@@ -68,9 +68,9 @@ public abstract class CustomerJacksonStreamingSerialization {
 
     public static Customer read(final JsonParser jsonParser) throws IOException {
         long _id = 0;
-        String _name = null;
-        Profile _profile = null;
-        List<Account> _accounts = null;
+        String _name = "";
+        Profile _profile = new Profile();
+        ArrayList<Account> _accounts = null;
 
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
             final String property = jsonParser.getCurrentName();
@@ -83,16 +83,12 @@ public abstract class CustomerJacksonStreamingSerialization {
             } else if ("profile".equals(property)) {
                 _profile = ProfileJacksonStreamingSerialization.read(jsonParser);
             } else if ("accounts".equals(property)) {
-                _accounts = new ArrayList<Account>();
+            	_accounts = new ArrayList<Account>();
                 while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
                     _accounts.add(AccountJacksonStreamingSerialization.read(jsonParser));
                 }
             }
         }
-
-        if (_name == null) _name = "";
-        if (_profile == null) _profile = new Profile();
-        if (_accounts == null) _accounts = new ArrayList<Account>();
 
         return new Customer(_id, _name, _profile, _accounts);
     }

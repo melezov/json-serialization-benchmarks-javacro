@@ -58,9 +58,9 @@ public abstract class AccountJacksonStreamingSerialization {
     }
 
     public static Account read(final JsonParser jsonParser) throws IOException {
-        String _IBAN = null;
-        String _currency = null;
-        List<Transaction> _transactions = null;
+        String _IBAN = "";
+        String _currency = "";
+        List<Transaction> _transactions = new ArrayList<Transaction>();
 
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
             final String property = jsonParser.getCurrentName();
@@ -71,16 +71,11 @@ public abstract class AccountJacksonStreamingSerialization {
                 jsonParser.nextToken();
                 _currency = jsonParser.getText();
             } else if ("transactions".equals(property)) {
-                _transactions = new ArrayList<Transaction>();
                 while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
                     _transactions.add(TransactionJacksonStreamingSerialization.read(jsonParser));
                 }
             }
         }
-
-        if (_IBAN == null) _IBAN = "";
-        if (_currency == null) _currency = "";
-        if (_transactions == null) _transactions = new ArrayList<Transaction>();
 
         return new Account(_IBAN, _currency, _transactions);
     }
