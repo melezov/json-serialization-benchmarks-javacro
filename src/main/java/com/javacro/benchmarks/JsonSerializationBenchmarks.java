@@ -59,6 +59,8 @@ public class JsonSerializationBenchmarks {
             e.printStackTrace();
         }
 
+        System.out.println("Done with work.");
+        System.out.println();
     }
 
     private static void timeStringVersion(final JsonSerializationBenchmarks benchmark, final int NUM_TESTS) throws IOException{
