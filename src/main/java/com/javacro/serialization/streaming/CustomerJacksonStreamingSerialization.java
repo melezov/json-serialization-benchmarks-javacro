@@ -49,6 +49,13 @@ public abstract class CustomerJacksonStreamingSerialization {
         return sw.toString();
     }
 
+    public static Customer deserialize(final JsonFactory jsonFactory, final String is) throws IOException {
+        final JsonParser jsonParser = jsonFactory.createParser(is);
+        final Customer customer = read(jsonParser);
+        jsonParser.close();
+        return customer;
+    }
+
     public static Customer deserialize(final JsonFactory jsonFactory, final byte[] ib) throws IOException {
         final JsonParser jsonParser = jsonFactory.createParser(ib);
         final Customer customer = read(jsonParser);

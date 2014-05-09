@@ -39,6 +39,11 @@ public abstract class CustomerManualJsonSerialization {
         return sw.toString();
     }
 
+    public static Customer deserialize(final String inputString) throws IOException {
+        final JsonReader jsonReader = new JsonReader(inputString.getBytes("UTF-8"));
+        return read(jsonReader);
+    }
+
     public static Customer deserialize(final byte[] inputBytes) throws IOException {
         final JsonReader jsonReader = new JsonReader(inputBytes);
         return read(jsonReader);
