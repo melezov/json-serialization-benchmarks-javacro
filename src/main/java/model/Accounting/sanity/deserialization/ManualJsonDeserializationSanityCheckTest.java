@@ -1,4 +1,4 @@
-package model.Accounting.sanity;
+package model.Accounting.sanity.deserialization;
 
 import java.io.IOException;
 

@@ -9,7 +9,7 @@ import org.joda.time.DateTime;
 import com.javacro.dslplatform.model.Accounting.Transaction;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 
-public abstract class TransactionManualJsonSerialization {
+public abstract class TransactionManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Transaction value) throws IOException {
         writer.write('{');
 		writer.write("\"paymentOn\":\"");

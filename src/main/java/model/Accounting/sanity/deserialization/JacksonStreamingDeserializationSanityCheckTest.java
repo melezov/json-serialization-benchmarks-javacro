@@ -1,4 +1,4 @@
-package model.Accounting.sanity;
+package model.Accounting.sanity.deserialization;
 import static com.javacro.benchmarks.TestCases.getAccountUseCases;
 import static com.javacro.benchmarks.TestCases.getCustomerUseCases;
 import static com.javacro.benchmarks.TestCases.getProfileUseCases;

@@ -146,6 +146,7 @@ public class TestCases {
                         new Transaction(1, 0, "", DateTime.now()),
                         new Transaction(1, 1, "abcde", DateTime.now()),
                         new Transaction(0, 1, "abcde", DateTime.now()),
+                        new Transaction(0, 0, "ABCDE", DateTime.now()),
                     }));
     }
 
@@ -153,6 +154,10 @@ public class TestCases {
         final List<Account> stubs = new ArrayList<Account>();
 
         stubs.add(new Account());
+        stubs.add(new Account("HR123123124", "", getTransactionStubs().subList(0, 1)));
+        stubs.add(new Account("", "HRK", getTransactionStubs().subList(0, 1)));
+        stubs.add(new Account("", "tumegledaj", new ArrayList<Transaction>()));
+        stubs.add(new Account("", "", getTransactionStubs()));
         stubs.add(new Account("HR123123124", "HRK", getTransactionStubs().subList(0, 1)));
         stubs.add(new Account("HR123123124", "HRK", getTransactionStubs()));
 

@@ -1,5 +1,6 @@
-package model.Accounting.sanity;
+package model.Accounting.sanity.serialization;
 import java.io.IOException;
+import java.io.StringWriter;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -13,12 +14,12 @@ import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.dslplatform.model.Accounting.Transaction;
-import com.javacro.serialization.jacksonstreaming.AccountJacksonStreamingSerialization;
-import com.javacro.serialization.jacksonstreaming.CustomerJacksonStreamingSerialization;
-import com.javacro.serialization.jacksonstreaming.ProfileJacksonStreamingSerialization;
-import com.javacro.serialization.jacksonstreaming.TransactionJacksonStreamingSerialization;
+import com.javacro.serialization.manual_optimized.AccountManualOptJsonSerialization;
+import com.javacro.serialization.manual_optimized.CustomerManualOptJsonSerialization;
+import com.javacro.serialization.manual_optimized.ProfileManualOptJsonSerialization;
+import com.javacro.serialization.manual_optimized.TransactionManualOptJsonSerialization;
 
-public class JacksonStreamingSerializationSanityCheckTest {
+public class ManualOptSanityCheck {
 
     private static ServiceLocator locator;
     private static final JsonFactory jsonFactory = new JsonFactory();
@@ -37,9 +38,11 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("=================");
         System.out.println("Testing serialization for Transaction: ");
         for(final Transaction c : TestCases.getTransactionStubs()){
+            final StringWriter sw = new StringWriter();
             System.out.println(c.toString());
             System.out.println("Serialization output: ");
-            System.out.println(TransactionJacksonStreamingSerialization.serialize(jsonFactory, c));
+            TransactionManualOptJsonSerialization.serialize(sw, c);
+            System.out.println(sw.toString());
         }
     }
 
@@ -48,9 +51,11 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("=================");
         System.out.println("Testing serialization for Profile: ");
         for(final Profile c : TestCases.getProfileStubs()){
+            final StringWriter sw = new StringWriter();
             System.out.println(c.toString());
             System.out.println("Serialization output: ");
-            System.out.println(ProfileJacksonStreamingSerialization.serialize(jsonFactory, c));
+            ProfileManualOptJsonSerialization.serialize(sw,c);
+            System.out.println(sw.toString());
         }
     }
 
@@ -59,11 +64,10 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("=================");
         System.out.println("Testing serialization for Account: ");
         for(final Account c : TestCases.getAccountStubs()){
+            final StringWriter sw = new StringWriter();
             System.out.println(c.toString());
-
-            final String out = AccountJacksonStreamingSerialization.serialize(jsonFactory, c);
-            System.out.println("Serialization done, output: ");
-            System.out.println(out);
+            AccountManualOptJsonSerialization.serialize(sw, c);
+            System.out.println(sw.toString());
         }
     }
 
@@ -73,9 +77,11 @@ public class JacksonStreamingSerializationSanityCheckTest {
         System.out.println("=================");
         System.out.println("Testing serialization for Customer: ");
         for(final Customer c : TestCases.getCustomerStubs()){
+            final StringWriter sw = new StringWriter();
             System.out.println(c.toString());
             System.out.println("Serialization output: ");
-            System.out.println(CustomerJacksonStreamingSerialization.serialize(jsonFactory, c));
+            CustomerManualOptJsonSerialization.serialize(sw, c);
+            System.out.println(sw.toString());
         }
     }
 

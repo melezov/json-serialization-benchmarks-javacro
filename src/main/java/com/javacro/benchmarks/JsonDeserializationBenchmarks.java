@@ -24,7 +24,7 @@ import com.javacro.serialization.afterburner.JacksonAfterburnerSerialization;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.jacksonstreaming.CustomerJacksonStreamingSerialization;
 import com.javacro.serialization.manual.CustomerManualJsonStreaming;
-import com.javacro.serialization.manual_optimized.CustomerManualOptimizedJsonSerialization;
+import com.javacro.serialization.manual_optimized.CustomerManualOptJsonSerialization;
 
 @State(Scope.Thread)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
@@ -196,7 +196,7 @@ public class JsonDeserializationBenchmarks {
 
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreaming() throws IOException {
-        final Customer customer = CustomerManualOptimizedJsonSerialization.deserializeWith(useCaseBytes);
+        final Customer customer = CustomerManualOptJsonSerialization.deserializeWith(useCaseBytes);
         //final Customer customer = CustomerManualJsonStreaming.read(jsonManualReader);
     }
 

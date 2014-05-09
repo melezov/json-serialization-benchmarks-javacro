@@ -13,7 +13,7 @@ import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 
-public abstract class CustomerManualOptimizedJsonSerialization {
+public abstract class CustomerManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Customer value) throws IOException {
         writer.write("{\"URI\":");
         StringConverter.serialize(value.getURI(), writer);
@@ -24,17 +24,17 @@ public abstract class CustomerManualOptimizedJsonSerialization {
             StringConverter.serialize(_name, writer);
         }
         writer.write(",\"profile\":");
-        ProfileManualJsonSerialization.serialize(writer, value.getProfile());
+        ProfileManualOptJsonSerialization.serialize(writer, value.getProfile());
         final List<Account> _accounts = value.getAccounts();
         if (_accounts != null && !_accounts.isEmpty()) {
             writer.write(",\"accounts\":[");
             int _cnt = 0;
             final int _total = _accounts.size() - 1;
             for (;_cnt < _total; _cnt++) {
-                AccountManualJsonSerialization.serialize(writer, _accounts.get(_cnt));
+                AccountManualOptJsonSerialization.serialize(writer, _accounts.get(_cnt));
                 writer.write(',');
             }
-            AccountManualJsonSerialization.serialize(writer, _accounts.get(_cnt));
+            AccountManualOptJsonSerialization.serialize(writer, _accounts.get(_cnt));
             writer.write(']');
         }
         else if (_accounts != null) writer.write(",\"accounts\":[]");
@@ -93,7 +93,7 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                 case 1120506290:
                     if (nextToken != '{') throw new IOException("Expecting '{'");
                     nextToken = ManualJson.getNextToken(reader);
-                    _profile = ProfileManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken);
+                    _profile = ProfileManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken);
                     nextToken = ManualJson.getNextToken(reader);
                     break;
                 case -758926083:
@@ -102,12 +102,12 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                     if (nextToken != '{') throw new IOException("Expecting '{'");
                     nextToken = ManualJson.getNextToken(reader);
                     _accounts = new ArrayList<Account>();
-                    _accounts.add(AccountManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+                    _accounts.add(AccountManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
                     while((nextToken = ManualJson.getNextToken(reader)) == ',') {
                         nextToken = ManualJson.getNextToken(reader);
                         if (nextToken != '{') throw new IOException("Expecting '{'");
                         nextToken = ManualJson.getNextToken(reader);
-                        _accounts.add(AccountManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+                        _accounts.add(AccountManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
                     }
                     nextToken = ManualJson.getNextToken(reader);
                     break;
@@ -142,7 +142,7 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                         nextToken = ManualJson.getNextToken(reader);
                         break;
                     case 1120506290:
-                        _profile = ProfileManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken);
+                        _profile = ProfileManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken);
                         nextToken = ManualJson.getNextToken(reader);
                         break;
                     case -758926083:
@@ -151,12 +151,12 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                         if (nextToken != '{') throw new IOException("Expecting '{'");
                         nextToken = ManualJson.getNextToken(reader);
                         _accounts = new ArrayList<Account>();
-                        _accounts.add(AccountManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+                        _accounts.add(AccountManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
                         while((nextToken = ManualJson.getNextToken(reader)) == ',') {
                             nextToken = ManualJson.getNextToken(reader);
                             if (nextToken != '{') throw new IOException("Expecting '{'");
                             nextToken = ManualJson.getNextToken(reader);
-                            _accounts.add(AccountManualJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
+                            _accounts.add(AccountManualOptJsonSerialization.deserialize(reader, buffer, tokens, nextToken));
                         }
                         nextToken = ManualJson.getNextToken(reader);
                         break;
@@ -203,7 +203,7 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                 case 1120506290:
                     if (reader.read() != '{') throw new IOException("Expecting '{'. Found: " + (char)reader.read());
                     nextToken = reader.getNextToken();
-                    _profile = ProfileManualJsonSerialization.deserialize(reader);
+                    _profile = ProfileManualOptJsonSerialization.deserialize(reader);
                     nextToken = reader.getNextToken();
                     break;
                 case -758926083:
@@ -212,12 +212,12 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                     if (reader.read() != '{') throw new IOException("Expecting '{'. Found: " + (char)reader.read());
                     nextToken = reader.getNextToken();
                     _accounts = new ArrayList<Account>();
-                    _accounts.add(AccountManualJsonSerialization.deserialize(reader));
+                    _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
                     while((nextToken = reader.getNextToken()) == ',') {
                         nextToken = reader.getNextToken();
                         if (nextToken != '{') throw new IOException("Expecting '{'");
                         nextToken = reader.getNextToken();
-                        _accounts.add(AccountManualJsonSerialization.deserialize(reader));
+                        _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
                     }
                     nextToken = reader.getNextValidToken();
                     break;
@@ -254,7 +254,7 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                     case 1120506290:
                         if (reader.read() != '{') throw new IOException("Expecting '{'. Found: " + (char)nextToken);
                         nextToken = reader.getNextToken();
-                        _profile = ProfileManualJsonSerialization.deserialize(reader);
+                        _profile = ProfileManualOptJsonSerialization.deserialize(reader);
                         nextToken = reader.getNextToken();
                         break;
                     case -758926083:
@@ -263,12 +263,12 @@ public abstract class CustomerManualOptimizedJsonSerialization {
                         if (reader.read() != '{') throw new IOException("Expecting '{'. Found: " + (char)reader.read());
                         nextToken = reader.getNextToken();
                         _accounts = new ArrayList<Account>();
-                        _accounts.add(AccountManualJsonSerialization.deserialize(reader));
+                        _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
                         while((nextToken = reader.getNextValidToken()) == ',') {
                             reader.invalidate();
                             if (reader.read() != '{') throw new IOException("Expecting '{'");
                             nextToken = reader.getNextValidToken();
-                            _accounts.add(AccountManualJsonSerialization.deserialize(reader));
+                            _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
                         }
                         nextToken = reader.getNextValidToken();
                         break;

@@ -4,6 +4,9 @@ import java.util.Random;
 
 import org.openjdk.jmh.annotations.GenerateMicroBenchmark;
 
+/**
+ * An example of a benchmark that slows down after JVM warm-up
+ */
 public class UnrollingExample {
 
     private static final int[] buffer;
@@ -18,7 +21,7 @@ public class UnrollingExample {
         long sum = 0;
         buffer = new int[999999];
         for (int i = 0; i < buffer.length; i++) {
-            sum += buffer[i] = r.nextInt();
+            sum += (buffer[i] = r.nextInt())&0x12345678;
         }
         checksum = sum;
     }
@@ -48,7 +51,7 @@ public class UnrollingExample {
         for (int i = 0; i < ITERATIONS; i++) {
             long sum = 0;
             for (int r = 0; r < buffer.length; r++) {
-                sum += buffer[r];
+                sum += buffer[r]&0x12345678;
             }
 
             if (sum != checksum) { throw new RuntimeException("Invalid checksum: " + sum); }
@@ -62,15 +65,15 @@ public class UnrollingExample {
             final int split = buffer.length & ~3;
 
             if (buffer.length > 3) {
-                for (int r = 0; r < split;) {
-                    sum += buffer[r++];
-                    sum += buffer[r++];
-                    sum += buffer[r++];
-                    sum += buffer[r++];
+                for (int r = 0; r < split; r+=4) {
+                    sum += buffer[r] &0x12345678;
+                    sum += buffer[r+1]&0x12345678;
+                    sum += buffer[r+2]&0x12345678;
+                    sum += buffer[r+3]&0x12345678;
                 }
             }
             for (int r = split; r < buffer.length; r++) {
-                sum += buffer[r];
+                sum += buffer[r]&0x12345678;
             }
             if (sum != checksum) { throw new RuntimeException("Invalid checksum: " + sum); }
         }
