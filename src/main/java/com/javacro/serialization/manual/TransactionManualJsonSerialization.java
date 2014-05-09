@@ -34,6 +34,10 @@ public abstract class TransactionManualJsonSerialization {
         return sw.toString();
     }
 
+    public static Transaction deserialize(final String inputString) throws IOException {
+        return deserialize(inputString.getBytes("UTF-8"));
+    }
+
     public static Transaction deserialize(final byte[] inputBytes) throws IOException {
         final JsonReader jsonReader = new JsonReader(inputBytes);
         return read(jsonReader);
@@ -62,47 +66,26 @@ public abstract class TransactionManualJsonSerialization {
             final String property = jsonReader.readString();
             jsonReader.assertNext(':');
 
-            switch(property.charAt(0)){
-                case 'i': //inflow
-                    sb.setLength(0);
-                    _inflow = Double.parseDouble(jsonReader.readRawNumber(sb).toString());
-                    needsComma=true;
-                    continue;
-                case 'o': //outflow
-                    sb.setLength(0);
-                    _outflow = Double.parseDouble(jsonReader.readRawNumber(sb).toString());
-                    needsComma=true;
-                    continue;
-                case 'd': //description
-                    _description= jsonReader.readString();
-                    needsComma=true;
-                    continue;
-                case 'p': //paymentOn
-                    _paymentOn = DateTime.parse(jsonReader.readString());
-                    needsComma=true;
-                    continue;
+            if (property.equals("inflow")){
+                _inflow = Double.parseDouble(jsonReader.readRawNumber(new StringBuilder()).toString());
+                needsComma=true;
+                continue;
             }
-
-//            if (property.equals("inflow")){
-//                _inflow = Double.parseDouble(jsonReader.readRawNumber(new StringBuilder()).toString());
-//                needsComma=true;
-//                continue;
-//            }
-//            else if (property.equals("outflow")) {
-//                _outflow = Double.parseDouble(jsonReader.readRawNumber(new StringBuilder()).toString());
-//                needsComma=true;
-//                continue;
-//            }
-//            else if (property.equals("description")){
-//                _description= jsonReader.readString();
-//                needsComma=true;
-//                continue;
-//            }
-//            else if (property.equals("paymentOn")) {
-//                _paymentOn = DateTime.parse(jsonReader.readString());
-//                needsComma=true;
-//                continue;
-//            }
+            else if (property.equals("outflow")) {
+                _outflow = Double.parseDouble(jsonReader.readRawNumber(new StringBuilder()).toString());
+                needsComma=true;
+                continue;
+            }
+            else if (property.equals("description")){
+                _description= jsonReader.readString();
+                needsComma=true;
+                continue;
+            }
+            else if (property.equals("paymentOn")) {
+                _paymentOn = DateTime.parse(jsonReader.readString());
+                needsComma=true;
+                continue;
+            }
         }
 
         return new Transaction(

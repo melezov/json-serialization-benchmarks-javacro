@@ -40,8 +40,7 @@ public abstract class CustomerManualJsonSerialization {
     }
 
     public static Customer deserialize(final String inputString) throws IOException {
-        final JsonReader jsonReader = new JsonReader(inputString.getBytes("UTF-8"));
-        return read(jsonReader);
+        return deserialize(inputString.getBytes("UTF-8"));
     }
 
     public static Customer deserialize(final byte[] inputBytes) throws IOException {
@@ -92,53 +91,31 @@ public abstract class CustomerManualJsonSerialization {
             final String property = jsonReader.readString();
             jsonReader.assertNext(':');
 
-            switch(property.charAt(0)){
-                case 'i': // id
-                    sb.setLength(0);
-                    _id = Long.parseLong(jsonReader.readRawNumber(sb).toString());
-                    needsComma=true;
-                    continue;
-                case 'n': // name
-                    _name = jsonReader.readString();
-                    needsComma=true;
-                    continue;
-                case 'p': // profile
-                    _profile = ProfileManualJsonSerialization.read(jsonReader);
-                    jsonReader.invalidate();
-                    needsComma=true;
-                    continue;
-                case 'a': // accounts
-                    _accounts = readAccounts(jsonReader);
-                    needsComma=true;
-                    continue;
-
+            if (property.equals("id")){
+                sb.setLength(0);
+                _id = Long.parseLong(jsonReader.readRawNumber(sb).toString());
+                needsComma=true;
+                continue;
             }
 
-//            if (property.equals("id")){
-//                sb.setLength(0);
-//                _id = Long.parseLong(jsonReader.readRawNumber(sb).toString());
-//                needsComma=true;
-//                continue;
-//            }
-//
-//            if (property.equals("name")){
-//                _name = jsonReader.readString();
-//                needsComma=true;
-//                continue;
-//            }
-//
-//            if (property.equals("profile")){
-//                _profile = ProfileManualJsonSerialization.read(jsonReader);
-//                jsonReader.invalidate();
-//                needsComma=true;
-//                continue;
-//            }
-//
-//            if (property.equals("accounts")){
-//                _accounts = readAccounts(jsonReader);
-//                needsComma=true;
-//                continue;
-//            }
+            if (property.equals("name")){
+                _name = jsonReader.readString();
+                needsComma=true;
+                continue;
+            }
+
+            if (property.equals("profile")){
+                _profile = ProfileManualJsonSerialization.read(jsonReader);
+                jsonReader.invalidate();
+                needsComma=true;
+                continue;
+            }
+
+            if (property.equals("accounts")){
+                _accounts = readAccounts(jsonReader);
+                needsComma=true;
+                continue;
+            }
         }
 
         if (_name==null)     _name    = "";

@@ -36,6 +36,10 @@ public abstract class AccountManualJsonSerialization {
         return sw.toString();
     }
 
+    public static Account deserialize(final String inputString) throws IOException {
+        return deserialize(inputString.getBytes("UTF-8"));
+    }
+
     public static Account deserialize(final byte[] inputBytes) throws IOException {
         final JsonReader jsonReader = new JsonReader(inputBytes);
         return read(jsonReader);
@@ -83,38 +87,23 @@ public abstract class AccountManualJsonSerialization {
             final String property = jsonReader.readString();
             jsonReader.assertNext(':');
 
-            switch(property.charAt(0)){
-                case 'I': //IBAN
-                    _IBAN = jsonReader.readString();
-                    needsComma=true;
-                    continue;
-                case 'c': //currency
-                    _currency = jsonReader.readString();
-                    needsComma=true;
-                    continue;
-                case 't': //transactions
-                    _transactions = readTransactions(jsonReader);
-                    needsComma=true;
-                    continue;
+            if (property.equals("IBAN")){
+                _IBAN = jsonReader.readString();
+                needsComma=true;
+                continue;
             }
 
-//            if (property.equals("IBAN")){
-//                _IBAN = jsonReader.readString();
-//                needsComma=true;
-//                continue;
-//            }
-//
-//            if (property.equals("currency")){
-//                _currency = jsonReader.readString();
-//                needsComma=true;
-//                continue;
-//            }
-//
-//            if (property.equals("transactions")){
-//                _transactions = readTransactions(jsonReader);
-//                needsComma=true;
-//                continue;
-//            }
+            if (property.equals("currency")){
+                _currency = jsonReader.readString();
+                needsComma=true;
+                continue;
+            }
+
+            if (property.equals("transactions")){
+                _transactions = readTransactions(jsonReader);
+                needsComma=true;
+                continue;
+            }
         }
 
         return new Account(

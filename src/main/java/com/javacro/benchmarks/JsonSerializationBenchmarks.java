@@ -50,9 +50,10 @@ public class JsonSerializationBenchmarks {
         try {
             benchmark.buildUp();
 
-            for (final int NUM_TESTS : Arrays.asList(new Integer[]{1, 30, 300, 3000, 15000})){
-                timeBytesVersion(benchmark, NUM_TESTS);
-                timeStringVersion(benchmark, NUM_TESTS);
+            //for (final int NUM_TESTS : Arrays.asList(new Integer[]{1, 30, 300, 3000, 15000})){
+            for (final int NUM_TESTS : Arrays.asList(new Integer[]{3000})){
+                timeForBytesInput(benchmark, NUM_TESTS);
+                timeForStringInput(benchmark, NUM_TESTS);
             }
 
         } catch (final Exception e) {
@@ -63,7 +64,7 @@ public class JsonSerializationBenchmarks {
         System.out.println();
     }
 
-    private static void timeStringVersion(final JsonSerializationBenchmarks benchmark, final int NUM_TESTS) throws IOException{
+    private static void timeForStringInput(final JsonSerializationBenchmarks benchmark, final int NUM_TESTS) throws IOException{
         System.out.println();
         System.out.println("==========");
         System.out.println("Strings: ");
@@ -116,7 +117,7 @@ public class JsonSerializationBenchmarks {
         }
     }
 
-    private static void timeBytesVersion(final JsonSerializationBenchmarks benchmark, final int NUM_TESTS) throws IOException{
+    private static void timeForBytesInput(final JsonSerializationBenchmarks benchmark, final int NUM_TESTS) throws IOException{
 
         System.out.println();
         System.out.println("==========");

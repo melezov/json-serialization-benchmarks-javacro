@@ -26,6 +26,10 @@ public abstract class ProfileManualJsonSerialization {
         return sw.toString();
     }
 
+    public static Profile deserialize(final String inputString) throws IOException {
+        return deserialize(inputString.getBytes("UTF-8"));
+    }
+
     public static Profile deserialize(final byte[] inputBytes) throws IOException {
         final JsonReader jsonReader = new JsonReader(inputBytes, 0);
         return read(jsonReader);
@@ -67,28 +71,17 @@ public abstract class ProfileManualJsonSerialization {
             final String property = jr.readString();
             jr.assertNext(':');
 
-            switch(property.charAt(0)){
-                case 'e': //email
-                    _email = jr.readString();
-                    needComma=true;
-                    continue;
-                case 'p': //phone number
-                    _phoneNumber = jr.readString();
-                    needComma=true;
-                    continue;
+            if (property.equals("email")) {
+                _email = jr.readString();
+                needComma=true;
+                continue;
             }
 
-//            if (property.equals("email")) {
-//                _email = jr.readString();
-//                needComma=true;
-//                continue;
-//            }
-//
-//            if (property.equals("phoneNumber")) {
-//                _phoneNumber = jr.readString();
-//                needComma=true;
-//                continue;
-//            }
+            if (property.equals("phoneNumber")) {
+                _phoneNumber = jr.readString();
+                needComma=true;
+                continue;
+            }
         }
 
         return new Profile(
