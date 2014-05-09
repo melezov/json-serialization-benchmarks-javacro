@@ -19,11 +19,11 @@ import com.dslplatform.client.JsonSerialization;
 import com.dslplatform.patterns.ServiceLocator;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JavaType;
+import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.serialization.afterburner.JacksonAfterburnerSerialization;
 import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.jacksonstreaming.CustomerJacksonStreamingSerialization;
-import com.javacro.serialization.manual.CustomerManualJsonStreaming;
 import com.javacro.serialization.manual_optimized.CustomerManualOptJsonSerialization;
 
 @State(Scope.Thread)
@@ -41,6 +41,7 @@ public class JsonDeserializationBenchmarks {
     private final JsonFactory jsonFactory = new JsonFactory();
 
     private final String[] useCases = TestCases.getCustomerUseCasesArray();
+    private final List<String> bigAssCustomerUseCases = TestCases.getBigAssCustomerUseCases();
 
     private ServiceLocator locator;
     private JsonSerialization jsonSerialization;
@@ -64,11 +65,13 @@ public class JsonDeserializationBenchmarks {
         try {
             benchmark.buildUp();
 
-            final int NUM_TESTS = 10000;
+            final int NUM_TESTS = 5000;
 
             System.out.println();
             System.out.println("=====");
-            System.out.println("Number of tests: " + NUM_TESTS);
+            System.out.println("Deserializing objects from Json:");
+            System.out.println("# Number of tests: " + NUM_TESTS);
+            System.out.println("# Number of transactions: ?");
             System.out.println("=====");
             final int test = 5;
 
@@ -114,19 +117,19 @@ public class JsonDeserializationBenchmarks {
 //                System.out.println("JacksonVulgaris (testRate): " + sumaSumarum);
             }
 
-            {
-                double sumaSumarum = 0;
-                final long startAt = System.currentTimeMillis();
-                for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeManualJsonStreaming();
-                }
-                final long endAt = System.currentTimeMillis();
-                sumaSumarum += endAt - startAt;
-                stats.add(benchmark.new Stats("ManualStreaming",sumaSumarum, sumaSumarum/NUM_TESTS));
-
-                System.out.printf("ManualStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
-//                System.out.println("ManualJsonStreaming (testRate): " + sumaSumarum);
-            }
+//            {
+//                double sumaSumarum = 0;
+//                final long startAt = System.currentTimeMillis();
+//                for (int i = 0; i < NUM_TESTS; i++) {
+//                    benchmark.timeManualJsonStreaming();
+//                }
+//                final long endAt = System.currentTimeMillis();
+//                sumaSumarum += endAt - startAt;
+//                stats.add(benchmark.new Stats("ManualStreaming",sumaSumarum, sumaSumarum/NUM_TESTS));
+//
+//                System.out.printf("ManualStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
+////                System.out.println("ManualJsonStreaming (testRate): " + sumaSumarum);
+//            }
 
             {
                 final long startAt = System.currentTimeMillis();
@@ -160,12 +163,18 @@ public class JsonDeserializationBenchmarks {
         this.jsonSerialization = locator.resolve(JsonSerialization.class);
         this.afterburnerSerialization = new JacksonAfterburnerSerialization(locator);
 
-        this.useCase = useCases[r];
-        this.useCaseBytes = useCases[r].getBytes("UTF-8");
+        //this.useCase = useCases[r];
+        this.useCase = TestCases.getBigAssCustomerUseCase();
+        //this.useCase = TestCases.getSmallCustomerUseCase();
+        this.useCaseBytes = useCase.getBytes("UTF-8");
         this.useCaseInputStream = new ByteArrayInputStream(useCaseBytes);
 
         this.jsonManualReader = new JsonReader(useCaseBytes);
         this.stringReader = new StringReader(useCase);
+
+//        System.out.println("Deserializing");
+//        System.out.println(useCase);
+//        System.exit(0);
     }
 
     @GenerateMicroBenchmark
@@ -176,28 +185,35 @@ public class JsonDeserializationBenchmarks {
     @GenerateMicroBenchmark
     public void timeJacksonVulgaris() throws IOException {
         final Customer customer = jsonSerialization.deserialize(customerType, useCase);
+        //System.out.println(customer);
+        //System.out.println(getTransactionsNum(customer));
     }
 
     @GenerateMicroBenchmark
     public void timeJacksonAfterBurner() throws IOException {
         final Customer customer = afterburnerSerialization.deserialize(customerType, useCase);
+        //System.out.println(customer);
+        //System.out.println(getTransactionsNum(customer));
     }
 
     @GenerateMicroBenchmark
     public void timeJacksonStreaming() throws IOException {
         final Customer customer = CustomerJacksonStreamingSerialization.deserialize(jsonFactory, useCase);
+        //System.out.println(customer);
+        //System.out.println(getTransactionsNum(customer));
     }
 
-    @GenerateMicroBenchmark
-    public void timeManualJsonStreaming() throws IOException {
-        final Customer customer = CustomerManualJsonStreaming.deserialize(useCaseBytes);
-        //final Customer customer = CustomerManualJsonStreaming.read(jsonManualReader);
-    }
+//    @GenerateMicroBenchmark
+//    public void timeManualJsonStreaming() throws IOException {
+//        final Customer customer = CustomerManualJsonStreaming.deserialize(useCaseBytes);
+//        //System.out.println(getTransactionsNum(customer));
+//    }
 
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreaming() throws IOException {
         final Customer customer = CustomerManualOptJsonSerialization.deserializeWith(useCaseBytes);
-        //final Customer customer = CustomerManualJsonStreaming.read(jsonManualReader);
+        //System.out.println(customer);
+        //System.out.println(getTransactionsNum(customer));
     }
 
 //    @GenerateMicroBenchmark
@@ -207,4 +223,12 @@ public class JsonDeserializationBenchmarks {
 //            JsonFormat.merge(useCases[r], builder);
 //        }
 //    }
+    private static long getTransactionsNum(final Customer c){
+        long sum=0;
+        for(final Account a : c.getAccounts()){
+            sum+=a.getTransactions().size();
+        }
+
+        return sum;
+    }
 }

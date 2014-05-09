@@ -1,0 +1,42 @@
+Deserijalizacija za mali broj transakcija:
+
+=====
+Deserializing objects from Json:
+# Number of tests: 1000
+# Number of transactions: 75
+=====
+JacksonAfterBurner (ms/tests):			1.33 
+JacksonStreaming (ms/tests):			0.49 
+JacksonVulgaris (ms/tests):			0.38 
+ManualStreaming (ms/tests):			0.19 
+ManualOptimizedStreaming (ms/tests):		0.17 
+
+=====
+Totals:
+=====
+Test:	JacksonAfterBurner,	Total:	1331.00	
+Test:	JacksonStreaming,	Total:	489.00	
+Test:	JacksonVulgaris,	Total:	375.00	
+Test:	ManualStreaming,	Total:	186.00	
+Test:	ManualOptStreaming,	Total:	173.00	
+
+=====
+Deserializing objects from Json:
+# Number of tests: 5000
+# Number of transactions: 75
+=====
+JacksonAfterBurner (ms/tests):		0.38 
+JacksonStreaming (ms/tests):		0.24 
+JacksonVulgaris (ms/tests):		0.15 
+ManualStreaming (ms/tests):		0.13 
+ManualOptimizedStreaming (ms/tests):		0.12 
+
+=====
+Totals:
+=====
+Test:	JacksonAfterBurner,	Total:	1883.00	
+Test:	JacksonStreaming,	Total:	1177.00	
+Test:	JacksonVulgaris,	Total:	765.00	
+Test:	ManualStreaming,	Total:	650.00	
+Test:	ManualOptStreaming,	Total:	600.00	
+
