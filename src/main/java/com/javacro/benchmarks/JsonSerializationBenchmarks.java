@@ -69,10 +69,12 @@ public class JsonSerializationBenchmarks {
             benchmark.buildUp();
 
             final int NUM_TESTS = 5000;
+            
+            for (int cnt = 1; cnt <= 1; cnt++) {
 
             System.out.println();
             System.out.println("=====");
-            System.out.println("Serializing objects to Json:");
+            System.out.println("Serializing objects to Json: " + cnt);
             System.out.println("# Number of tests: " + NUM_TESTS);
             System.out.println("# Number of transactions: " + getTransactionsNum(benchmark.testCustomerStub));
             System.out.println("=====");
@@ -95,7 +97,7 @@ public class JsonSerializationBenchmarks {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeJacksonStreaming();;
+                    benchmark.timeJacksonStreaming();
                 }
                 final long endAt = System.currentTimeMillis();
                 sumaSumarum += endAt - startAt;
@@ -148,10 +150,11 @@ public class JsonSerializationBenchmarks {
 
             System.out.println();
             System.out.println("=====");
-            System.out.println("Totals:");
+            System.out.println("Totals: " + cnt);
             System.out.println("=====");
             for(final Stats s : stats){
                 System.out.printf("Test:\t%s,\tTotal:\t%.2f\t%n", s.testName, s.summaSummarum);
+            }
             }
 
         } catch (final Exception e) {
@@ -202,7 +205,7 @@ public class JsonSerializationBenchmarks {
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreaming() throws IOException {
         final StringWriter sw = new StringWriter();
-        CustomerManualOptJsonSerialization.serialize(new StringWriter(), testCustomerStub);
+        CustomerManualOptJsonSerialization.serialize(sw, testCustomerStub);
         final String customer_string = sw.toString();
     }
 

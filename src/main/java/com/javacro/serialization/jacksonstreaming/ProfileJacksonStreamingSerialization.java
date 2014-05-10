@@ -10,17 +10,6 @@ import com.fasterxml.jackson.core.JsonToken;
 import com.javacro.dslplatform.model.Accounting.Profile;
 
 public abstract class ProfileJacksonStreamingSerialization {
-//    @Override
-    public static boolean isDefault(final Profile profile) {
-        if (profile.getEmail() != null)
-            return false;
-
-        if (profile.getPhoneNumber() != null)
-            return false;
-
-        return true;
-    }
-
     public static String serialize(final JsonFactory jsonFactory, final Profile value) throws IOException {
         final StringWriter sw = new StringWriter();
         final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);

@@ -10,19 +10,21 @@ import com.javacro.serialization.io.jvm.json.JsonReader;
 public abstract class ProfileManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Profile value) throws IOException {
         writer.write('{');
-        boolean hasComma = false;
         final String _email = value.getEmail();
+        final String _phoneNumber = value.getPhoneNumber();
         if(_email != null) {
-            hasComma = true;
             writer.write("\"email\":");
             StringConverter.serialize(_email, writer);
+	        if(_phoneNumber != null) {
+	            writer.write(",\"phoneNumber\":");
+	            StringConverter.serialize(_phoneNumber, writer);
+	        }
         }
-        final String _phoneNumber = value.getPhoneNumber();
-        if(_phoneNumber != null) {
-            if (hasComma) writer.write(',');
-            hasComma = true;
-            writer.write("\"phoneNumber\":");
-            StringConverter.serialize(_phoneNumber, writer);
+        else {
+	        if(_phoneNumber != null) {
+	            writer.write("\"phoneNumber\":");
+	            StringConverter.serialize(_phoneNumber, writer);
+	        }        	
         }
         writer.write('}');
     }

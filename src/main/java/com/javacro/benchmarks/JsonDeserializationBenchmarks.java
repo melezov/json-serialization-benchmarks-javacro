@@ -65,15 +65,17 @@ public class JsonDeserializationBenchmarks {
         try {
             benchmark.buildUp();
 
-            final int NUM_TESTS = 5000;
+            final int NUM_TESTS = 500;//5000;
+            
+            for (int cnt = 1; cnt <= 1; cnt ++) {
 
             System.out.println();
             System.out.println("=====");
-            System.out.println("Deserializing objects from Json:");
+            System.out.println("Deserializing objects from Json: " + cnt);
             System.out.println("# Number of tests: " + NUM_TESTS);
             System.out.println("# Number of transactions: ?");
             System.out.println("=====");
-            final int test = 5;
+            //final int test = 5;
 
             {
                 double sumaSumarum = 0;
@@ -93,7 +95,7 @@ public class JsonDeserializationBenchmarks {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeJacksonStreaming();;
+                    benchmark.timeJacksonStreaming();
                 }
                 final long endAt = System.currentTimeMillis();
                 sumaSumarum += endAt - startAt;
@@ -146,10 +148,11 @@ public class JsonDeserializationBenchmarks {
 
             System.out.println();
             System.out.println("=====");
-            System.out.println("Totals:");
+            System.out.println("Totals: " + cnt);
             System.out.println("=====");
             for(final Stats s : stats){
                 System.out.printf("Test:\t%s,\tTotal:\t%.2f\t%n", s.testName, s.summaSummarum);
+            }
             }
 
         } catch (final Exception e) {

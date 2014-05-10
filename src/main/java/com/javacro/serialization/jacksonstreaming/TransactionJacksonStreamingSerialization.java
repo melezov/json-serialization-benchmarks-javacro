@@ -13,25 +13,6 @@ import com.javacro.dslplatform.model.Accounting.Transaction;
 
 public abstract class TransactionJacksonStreamingSerialization {
 
-    private static boolean needsComma = false;
-
-//    @Override
-    public static boolean isDefault(final Transaction transaction) {
-        if (transaction.getInflow() != 0)
-            return false;
-
-        if (transaction.getOutflow() != 0)
-            return false;
-
-        if (!transaction.getDescription().isEmpty())
-            return false;
-
-        if (!transaction.getPaymentOn().equals(DateTime.parse("1-1-1T00:22")))
-                return false;
-
-        return true;
-    }
-
     public static String serialize(final JsonFactory jsonFactory, final Transaction value) throws IOException {
         final StringWriter sw = new StringWriter();
         final JsonGenerator jsonGenerator = jsonFactory.createGenerator(sw);
@@ -46,6 +27,8 @@ public abstract class TransactionJacksonStreamingSerialization {
         jsonParser.close();
         return transaction;
     }
+    
+    //private static DateTime minDate = DateTime.parse("1-1-1T00:22");
 
     public static void write(final JsonGenerator jsonGenerator, final Transaction value) throws IOException {
 
@@ -62,17 +45,18 @@ public abstract class TransactionJacksonStreamingSerialization {
             jsonGenerator.writeNumberField("outflow", outflow);
         if (!description.equals(""))
             jsonGenerator.writeStringField("description", description);
-        if (!paymentOn.equals(DateTime.parse("1-1-1T00:22")))
+        //if (!paymentOn.equals(minDate))
             jsonGenerator.writeStringField("paymentOn", paymentOn.toString());
 
         jsonGenerator.writeEndObject();
     }
+    private static DateTime minDate = DateTime.parse("1-1-1T12:34");
 
     public static Transaction read(final JsonParser jsonParser) throws IOException {
         double _inflow = 0.0;
         double _outflow = 0.0;
-        String _description = null;
-        DateTime _paymentOn = null;
+        String _description = "";
+        DateTime _paymentOn = minDate;
 
         while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
             final String property = jsonParser.getCurrentName();
@@ -99,13 +83,10 @@ public abstract class TransactionJacksonStreamingSerialization {
             }
         }
 
-        if(_paymentOn == null)
-            _paymentOn = DateTime.parse("1-1-1T12:34");
-
         return new Transaction(
                 _inflow,
                 _outflow,
-                _description == null ? "" : _description,
-                _paymentOn == null ? DateTime.now() : _paymentOn);
+                _description,
+                _paymentOn);
     }
 }
