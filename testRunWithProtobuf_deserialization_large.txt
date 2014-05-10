@@ -1,0 +1,21 @@
+DSL object transactions: 10000
+Protobuf object transactions: 10000
+
+=====
+Serializing objects to Json: 1
+# Number of tests: 500
+=====
+JacksonAfterBurner (ms/tests):  34.10 
+JacksonStreaming (ms/tests):    32.85 
+JacksonVulgaris (ms/tests):     32.44 
+ManualOptStreaming (ms/tests):  29.43 
+Protobuf streaming (ms/tests):  2.18 
+
+=====
+Totals: 1
+=====
+Test:	JacksonAfterBurner,	Total:  17049.00	
+Test:	JacksonStreaming,	Total:  16424.00	
+Test:	JacksonVulgaris,	Total:  16219.00	
+Test:	ManualOptStreaming,	Total:  14717.00	
+Test:	ProtobufStreaming,	Total:  1089.00		
