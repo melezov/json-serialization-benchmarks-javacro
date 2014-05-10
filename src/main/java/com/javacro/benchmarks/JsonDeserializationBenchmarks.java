@@ -2,7 +2,6 @@ package com.javacro.benchmarks;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,8 +20,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
+import com.javacro.protobuf.model.accounting.AccountingProtobuf;
 import com.javacro.serialization.afterburner.JacksonAfterburnerSerialization;
-import com.javacro.serialization.io.jvm.json.JsonReader;
 import com.javacro.serialization.jacksonstreaming.CustomerJacksonStreamingSerialization;
 import com.javacro.serialization.manual_optimized.CustomerManualOptJsonSerialization;
 
@@ -38,23 +37,19 @@ public class JsonDeserializationBenchmarks {
     }
 
     private final JavaType customerType = JsonSerialization.buildType(Customer.class);
-    private final JsonFactory jsonFactory = new JsonFactory();
-
-    private final String[] useCases = TestCases.getCustomerUseCasesArray();
-    private final List<String> bigAssCustomerUseCases = TestCases.getBigAssCustomerUseCases();
+    private final JsonFactory jsonFactory = new JsonFactory();      
 
     private ServiceLocator locator;
     private JsonSerialization jsonSerialization;
-    private JacksonAfterburnerSerialization afterburnerSerialization;
+    private JacksonAfterburnerSerialization afterburnerSerialization;    
 
-    private final int r = useCases.length - 1;
-
-    private byte[] useCaseBytes;
-    private ByteArrayInputStream useCaseInputStream;
-    private String useCase;
-
-    private JsonReader jsonManualReader;
-    private StringReader stringReader;
+    private byte[] customerJsonSource_bytes;
+    private ByteArrayInputStream customerJsonSource_byteArrayInputStream;
+    private String customerJsonSource_string;
+    
+    private byte[] testCustomerStubBytes;
+	private byte[] customerProtobufSource_byteArray;		
+        
 
     public static void main(final String[] args) {
 
@@ -68,13 +63,12 @@ public class JsonDeserializationBenchmarks {
             final int NUM_TESTS = 100;
             final int test = 0;
             
-            for (int cnt = 1; cnt <= 2; cnt ++) {
+            for (int cnt = 1; cnt <= 1; cnt ++) {
 
             System.out.println();
             System.out.println("=====");
             System.out.println("Deserializing objects from Json: " + cnt);
-            System.out.println("# Number of tests: " + NUM_TESTS);
-            System.out.println("# Number of transactions: ?");
+            System.out.println("# Number of tests: " + NUM_TESTS);            
             System.out.println("=====");
 
             if (test == 0 || test == 1) {
@@ -160,6 +154,20 @@ public class JsonDeserializationBenchmarks {
                 System.out.printf("ManualOptimizedNewStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
 //                System.out.println("ManualOptimizedJsonStreaming (testRate): " + sumaSumarum);
             }
+            
+            if (test == 0 || test == 7) {
+                final long startAt = System.currentTimeMillis();
+                for (int i = 0; i < NUM_TESTS; i++) {
+                    benchmark.timeProtobufferJson();
+                    //System.out.println(i);
+                }
+                final long endAt = System.currentTimeMillis();
+                final double sumaSumarum = endAt - startAt;
+                stats.add(benchmark.new Stats("Protobuf", sumaSumarum, sumaSumarum/NUM_TESTS));
+
+                System.out.printf("Protobuf (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
+//                System.out.println("ManualOptimizedJsonStreaming (testRate): " + sumaSumarum);
+            }
 
             System.out.println();
             System.out.println("=====");
@@ -181,18 +189,14 @@ public class JsonDeserializationBenchmarks {
         this.jsonSerialization = locator.resolve(JsonSerialization.class);
         this.afterburnerSerialization = new JacksonAfterburnerSerialization(locator);
 
-        //this.useCase = useCases[r];
-        this.useCase = TestCases.getBigAssCustomerUseCase();
-        //this.useCase = TestCases.getSmallCustomerUseCase();
-        this.useCaseBytes = useCase.getBytes("UTF-8");
-        this.useCaseInputStream = new ByteArrayInputStream(useCaseBytes);
-
-        this.jsonManualReader = new JsonReader(useCaseBytes);
-        this.stringReader = new StringReader(useCase);
-
-//        System.out.println("Deserializing");
-//        System.out.println(useCase);
-//        System.exit(0);
+        this.customerJsonSource_string = TestCases.getBigAssCustomerUseCase();                
+		this.customerProtobufSource_byteArray = TestCasesProtobuf.getBigAssCustomerUseCase();
+		System.out.println("DSL object transactions: " + getTransactionsNum(TestCases.getBigAssCustomer()));
+		System.out.println("Protobuf object transactions: " + getTransactionsNum(TestCasesProtobuf.getBigAssCustomer()));
+        
+        this.customerJsonSource_bytes = customerJsonSource_string.getBytes("UTF-8");
+        this.customerJsonSource_byteArrayInputStream = new ByteArrayInputStream(customerJsonSource_bytes);        
+        
     }
 
     @GenerateMicroBenchmark
@@ -202,21 +206,21 @@ public class JsonDeserializationBenchmarks {
 
     @GenerateMicroBenchmark
     public void timeJacksonVulgaris() throws IOException {
-        final Customer customer = jsonSerialization.deserialize(customerType, useCase);
+        final Customer customer = jsonSerialization.deserialize(customerType, customerJsonSource_string);
         //System.out.println(customer);
         //System.out.println(getTransactionsNum(customer));
     }
 
     @GenerateMicroBenchmark
     public void timeJacksonAfterBurner() throws IOException {
-        final Customer customer = afterburnerSerialization.deserialize(customerType, useCase);
+        final Customer customer = afterburnerSerialization.deserialize(customerType, customerJsonSource_string);
         //System.out.println(customer);
         //System.out.println(getTransactionsNum(customer));
     }
 
     @GenerateMicroBenchmark
     public void timeJacksonStreaming() throws IOException {
-        final Customer customer = CustomerJacksonStreamingSerialization.deserialize(jsonFactory, useCase);
+        final Customer customer = CustomerJacksonStreamingSerialization.deserialize(jsonFactory, customerJsonSource_string);
         //System.out.println(customer);
         //System.out.println(getTransactionsNum(customer));
     }
@@ -229,29 +233,39 @@ public class JsonDeserializationBenchmarks {
 
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreaming() throws IOException {
-        final Customer customer = CustomerManualOptJsonSerialization.deserializeWith(useCaseBytes);
+        final Customer customer = CustomerManualOptJsonSerialization.deserializeWith(customerJsonSource_bytes);
         //System.out.println(customer);
         //System.out.println(getTransactionsNum(customer));
     }
 
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreamingNew() throws IOException {
-        final Customer customer = CustomerManualOptJsonSerialization.deserializeOptimized(useCaseBytes);
+        final Customer customer = CustomerManualOptJsonSerialization.deserializeOptimized(customerJsonSource_bytes);
         //System.out.println(customer);
         //System.out.println(getTransactionsNum(customer));
     }
 
-//    @GenerateMicroBenchmark
-//    public void timeProtobufferJson() throws IOException {
-//        for(int r=0; r<useCases.length ; r++){
-//            final Message.Builder builder = CustomeringProtobuf.Customer.newBuilder();
-//            JsonFormat.merge(useCases[r], builder);
-//        }
-//    }
+    @GenerateMicroBenchmark
+    public void timeProtobufferJson() throws IOException {
+    	final com.javacro.protobuf.model.accounting.AccountingProtobuf.
+		Customer customer_protobuf =
+		com.javacro.protobuf.model.accounting.AccountingProtobuf.
+		Customer.parseFrom(customerProtobufSource_byteArray);
+    }
+    
     private static long getTransactionsNum(final Customer c){
         long sum=0;
         for(final Account a : c.getAccounts()){
             sum+=a.getTransactions().size();
+        }
+
+        return sum;
+    }
+    
+    private static long getTransactionsNum(final AccountingProtobuf.Customer c){
+        long sum=0;
+        for(final AccountingProtobuf.Account a : c.getAccountsList()){
+            sum+=a.getTransactionsList().size();
         }
 
         return sum;

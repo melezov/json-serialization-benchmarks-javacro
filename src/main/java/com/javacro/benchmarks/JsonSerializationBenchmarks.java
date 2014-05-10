@@ -1,8 +1,6 @@
 package com.javacro.benchmarks;
 
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -22,8 +20,8 @@ import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.databind.JavaType;
 import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
+import com.javacro.protobuf.model.accounting.AccountingProtobuf;
 import com.javacro.serialization.afterburner.JacksonAfterburnerSerialization;
-import com.javacro.serialization.io.jvm.json.JsonWriter;
 import com.javacro.serialization.jacksonstreaming.CustomerJacksonStreamingSerialization;
 import com.javacro.serialization.manual_optimized.CustomerManualOptJsonSerialization;
 
@@ -31,199 +29,239 @@ import com.javacro.serialization.manual_optimized.CustomerManualOptJsonSerializa
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
 public class JsonSerializationBenchmarks {
 
-    private class Stats{
-        public String testName="Test";
-        public double summaSummarum=0;
-        public double testRate;
-        public Stats(final String testName, final double sumaSumarum, final double d){this.testName=testName; this.summaSummarum=sumaSumarum; this.testRate=d;}
-    }
+	private class Stats {
+		public String testName = "Test";
+		public double summaSummarum = 0;
+		public double testRate;
 
-    private final JavaType customerType = JsonSerialization.buildType(Customer.class);
-    private final JsonFactory jsonFactory = new JsonFactory();
+		public Stats(final String testName, final double sumaSumarum,
+				final double d) {
+			this.testName = testName;
+			this.summaSummarum = sumaSumarum;
+			this.testRate = d;
+		}
+	}
 
+	private final JavaType customerType = JsonSerialization
+			.buildType(Customer.class);
+	private final JsonFactory jsonFactory = new JsonFactory();	
 
-    private final List<Customer> testCustomerStubs = TestCases.getCustomerStubs();
-    private static final Customer bigassCustomer = TestCases.getBigAssCustomer();
-    private static final Customer smallCustomer = TestCases.getSmallCustomer();
+	private ServiceLocator locator;
+	private JsonSerialization jsonSerialization;
+	private JacksonAfterburnerSerialization afterburnerSerialization;	
+	
+	private final Customer testCustomerStub = TestCases.getBigAssCustomer();
+	private final AccountingProtobuf.Customer 
+		testProtobufCustomerStub=TestCasesProtobuf.getBigAssCustomer();		
 
-    private ServiceLocator locator;
-    private JsonSerialization jsonSerialization;
-    private JacksonAfterburnerSerialization afterburnerSerialization;
+	public static void main(final String[] args) {
 
-    private final int r = testCustomerStubs.size() - 1;
+		final JsonSerializationBenchmarks benchmark = new JsonSerializationBenchmarks();
 
-    private byte[] testCustomerStubBytes;
-    private ByteArrayInputStream testCustomerStubInputStream;
-    private Customer testCustomerStub;
+		final List<Stats> stats = new ArrayList<Stats>();
 
-    private JsonWriter jsonManualWriter;
-    private StringReader stringReader;
+		try {
+			benchmark.buildUp();
 
-    public static void main(final String[] args) {
+			final int NUM_TESTS = 500;
+			final int test = 0;
 
-        final JsonSerializationBenchmarks benchmark = new JsonSerializationBenchmarks();
+			for (int cnt = 1; cnt <= 1; cnt++) {
 
-        final List<Stats> stats = new ArrayList<Stats>();
+				System.out.println();
+				System.out.println("=====");
+				System.out.println("Serializing objects to Json: " + cnt);
+				System.out.println("# Number of tests: " + NUM_TESTS);				
+				System.out.println("=====");
 
-        try {
-            benchmark.buildUp();
+				if (test == 0 || test == 1) {
+					double sumaSumarum = 0;
+					final long startAt = System.currentTimeMillis();
+					for (int i = 0; i < NUM_TESTS; i++) {
+						benchmark.timeJacksonAfterBurner();
+					}
+					final long endAt = System.currentTimeMillis();
+					sumaSumarum += endAt - startAt;
+					stats.add(benchmark.new Stats("JacksonAfterBurner",
+							sumaSumarum, sumaSumarum / NUM_TESTS));
 
-            final int NUM_TESTS = 500;
-            final int test = 0;
-            
-            for (int cnt = 1; cnt <= 2; cnt++) {
+					System.out.printf(
+							"JacksonAfterBurner (ms/tests):\t\t%.2f %n",
+							sumaSumarum / NUM_TESTS);
+					// System.out.println("JacksonAfterBurner (testRate): " +
+					// sumaSumarum);
+				}
 
-            System.out.println();
-            System.out.println("=====");
-            System.out.println("Serializing objects to Json: " + cnt);
-            System.out.println("# Number of tests: " + NUM_TESTS);
-            System.out.println("# Number of transactions: " + getTransactionsNum(benchmark.testCustomerStub));
-            System.out.println("=====");
+				if (test == 0 || test == 2) {
+					double sumaSumarum = 0;
+					final long startAt = System.currentTimeMillis();
+					for (int i = 0; i < NUM_TESTS; i++) {
+						benchmark.timeJacksonStreaming();
+					}
+					final long endAt = System.currentTimeMillis();
+					sumaSumarum += endAt - startAt;
+					stats.add(benchmark.new Stats("JacksonStreaming",
+							sumaSumarum, sumaSumarum / NUM_TESTS));
 
-            if (test == 0 || test == 1) {
-                double sumaSumarum = 0;
-                final long startAt = System.currentTimeMillis();
-                for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeJacksonAfterBurner();
-                }
-                final long endAt = System.currentTimeMillis();
-                sumaSumarum += endAt - startAt;
-                stats.add(benchmark.new Stats("JacksonAfterBurner", sumaSumarum, sumaSumarum/NUM_TESTS));
+					System.out.printf(
+							"JacksonStreaming (ms/tests):\t\t%.2f %n",
+							sumaSumarum / NUM_TESTS);
+					// System.out.println("JacksonStreaming (testRate): " +
+					// sumaSumarum);
+				}
 
-                System.out.printf("JacksonAfterBurner (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
-//                System.out.println("JacksonAfterBurner (testRate): " + sumaSumarum);
-            }
+				if (test == 0 || test == 3) {
+					double sumaSumarum = 0;
+					final long startAt = System.currentTimeMillis();
+					for (int i = 0; i < NUM_TESTS; i++) {
+						benchmark.timeJacksonVulgaris();
+					}
+					final long endAt = System.currentTimeMillis();
+					sumaSumarum += endAt - startAt;
+					stats.add(benchmark.new Stats("JacksonVulgaris",
+							sumaSumarum, sumaSumarum / NUM_TESTS));
 
-            if (test == 0 || test == 2) {
-                double sumaSumarum = 0;
-                final long startAt = System.currentTimeMillis();
-                for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeJacksonStreaming();
-                }
-                final long endAt = System.currentTimeMillis();
-                sumaSumarum += endAt - startAt;
-                stats.add(benchmark.new Stats("JacksonStreaming", sumaSumarum, sumaSumarum/NUM_TESTS));
+					System.out.printf("JacksonVulgaris (ms/tests):\t\t%.2f %n",
+							sumaSumarum / NUM_TESTS);
+					// System.out.println("JacksonVulgaris (testRate): " +
+					// sumaSumarum);
+				}
 
-                System.out.printf("JacksonStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
-//                System.out.println("JacksonStreaming (testRate): " + sumaSumarum);
-            }
+				// {
+				// double sumaSumarum = 0;
+				// final long startAt = System.currentTimeMillis();
+				// for (int i = 0; i < NUM_TESTS; i++) {
+				// benchmark.timeManualJsonStreaming();
+				// }
+				// final long endAt = System.currentTimeMillis();
+				// sumaSumarum += endAt - startAt;
+				// stats.add(benchmark.new Stats("ManualStreaming",sumaSumarum,
+				// sumaSumarum/NUM_TESTS));
+				//
+				// System.out.printf("ManualStreaming (ms/tests):\t\t%.2f %n",
+				// sumaSumarum / NUM_TESTS);
+				// // System.out.println("ManualJsonStreaming (testRate): " +
+				// sumaSumarum);
+				// }
 
-            if (test == 0 || test == 3) {
-                double sumaSumarum = 0;
-                final long startAt = System.currentTimeMillis();
-                for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeJacksonVulgaris();
-                }
-                final long endAt = System.currentTimeMillis();
-                sumaSumarum += endAt - startAt;
-                stats.add(benchmark.new Stats("JacksonVulgaris", sumaSumarum, sumaSumarum/NUM_TESTS));
+				if (test == 0 || test == 5) {
+					final long startAt = System.currentTimeMillis();
+					for (int i = 0; i < NUM_TESTS; i++) {
+						benchmark.timeManualOptimizedJsonStreaming();
+					}
+					final long endAt = System.currentTimeMillis();
+					final double sumaSumarum = endAt - startAt;
+					stats.add(benchmark.new Stats("ManualOptStreaming",
+							sumaSumarum, sumaSumarum / NUM_TESTS));
 
-                System.out.printf("JacksonVulgaris (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
-//                System.out.println("JacksonVulgaris (testRate): " + sumaSumarum);
-            }
+					System.out.printf(
+							"ManualOptStreaming (ms/tests):\t\t%.2f %n",
+							sumaSumarum / NUM_TESTS);
+					// System.out.println("ManualOptimizedJsonStreaming (testRate): "
+					// + sumaSumarum);
+				}
 
-//            {
-//                double sumaSumarum = 0;
-//                final long startAt = System.currentTimeMillis();
-//                for (int i = 0; i < NUM_TESTS; i++) {
-//                    benchmark.timeManualJsonStreaming();
-//                }
-//                final long endAt = System.currentTimeMillis();
-//                sumaSumarum += endAt - startAt;
-//                stats.add(benchmark.new Stats("ManualStreaming",sumaSumarum, sumaSumarum/NUM_TESTS));
-//
-//                System.out.printf("ManualStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
-////                System.out.println("ManualJsonStreaming (testRate): " + sumaSumarum);
-//            }
+				if (test == 0 || test == 6) {
+					final long startAt = System.currentTimeMillis();
+					for (int i = 0; i < NUM_TESTS; i++) {
+						benchmark.timeProtobufferJson();
+						;
+					}
+					final long endAt = System.currentTimeMillis();
+					final double sumaSumarum = endAt - startAt;
+					stats.add(benchmark.new Stats("ProtobufStreaming",
+							sumaSumarum, sumaSumarum / NUM_TESTS));
 
-            if (test == 0 || test == 5) {
-                final long startAt = System.currentTimeMillis();
-                for (int i = 0; i < NUM_TESTS; i++) {
-                    benchmark.timeManualOptimizedJsonStreaming();
-                }
-                final long endAt = System.currentTimeMillis();
-                final double sumaSumarum = endAt - startAt;
-                stats.add(benchmark.new Stats("ManualOptStreaming", sumaSumarum, sumaSumarum/NUM_TESTS));
+					System.out.printf(
+							"Protobuf streaming (ms/tests):\t\t%.2f %n",
+							sumaSumarum / NUM_TESTS);
+					// System.out.println("ManualOptimizedJsonStreaming (testRate): "
+					// + sumaSumarum);
+				}
 
-                System.out.printf("ManualOptStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
-//                System.out.println("ManualOptimizedJsonStreaming (testRate): " + sumaSumarum);
-            }
+				System.out.println();
+				System.out.println("=====");
+				System.out.println("Totals: " + cnt);
+				System.out.println("=====");
+				for (final Stats s : stats) {
+					System.out.printf("Test:\t%s,\tTotal:\t%.2f\t%n",
+							s.testName, s.summaSummarum);
+				}
+			}
 
-            System.out.println();
-            System.out.println("=====");
-            System.out.println("Totals: " + cnt);
-            System.out.println("=====");
-            for(final Stats s : stats){
-                System.out.printf("Test:\t%s,\tTotal:\t%.2f\t%n", s.testName, s.summaSummarum);
-            }
-            }
+		} catch (final Exception e) {
+			e.printStackTrace();
+		}
+	}
 
-        } catch (final Exception e) {
-            e.printStackTrace();
-        }
-    }
+	@Setup
+	public void buildUp() throws IOException, UnsupportedEncodingException {
+		this.locator = Bootstrap.init(JsonSerializationBenchmarks.class
+				.getResourceAsStream("/dsl-project.ini"));
+		this.jsonSerialization = locator.resolve(JsonSerialization.class);
+		this.afterburnerSerialization = new JacksonAfterburnerSerialization(
+				locator);
+		
+		System.out.println("DSL object transactions: " + getTransactionsNum(TestCases.getBigAssCustomer()));
+		System.out.println("Protobuf object transactions: " + getTransactionsNum(TestCasesProtobuf.getBigAssCustomer()));
+	}
 
-    @Setup
-    public void buildUp() throws IOException, UnsupportedEncodingException {
-        this.locator = Bootstrap.init(JsonSerializationBenchmarks.class.getResourceAsStream("/dsl-project.ini"));
-        this.jsonSerialization = locator.resolve(JsonSerialization.class);
-        this.afterburnerSerialization = new JacksonAfterburnerSerialization(locator);
+	@GenerateMicroBenchmark
+	public void baseline() {
+		// Against dead code elimination
+	}
 
-        final StringWriter sw = new StringWriter();
-        this.jsonManualWriter = new JsonWriter(sw);
+	@GenerateMicroBenchmark
+	public void timeJacksonVulgaris() throws IOException {
+		final String customer_string = jsonSerialization
+				.serialize(testCustomerStub);
+	}
 
-        //this.testCustomerStub = testCustomerStubs.get(r);
-//        this.testCustomerStub = smallCustomer;
-        this.testCustomerStub = bigassCustomer;
+	@GenerateMicroBenchmark
+	public void timeJacksonAfterBurner() throws IOException {
+		final String customer_string = afterburnerSerialization
+				.serialize(testCustomerStub);
+	}
 
-    }
+	@GenerateMicroBenchmark
+	public void timeJacksonStreaming() throws IOException {
+		final String customer_string = CustomerJacksonStreamingSerialization
+				.serialize(jsonFactory, testCustomerStub);
+	}
 
-    @GenerateMicroBenchmark
-    public void baseline() {
-        // Against dead code elimination
-    }
+	// @GenerateMicroBenchmark
+	// public void timeManualJsonStreaming() throws IOException {
+	// final String customer_string =
+	// CustomerManualJsonStreaming.serialize(testCustomerStub);
+	// }
 
-    @GenerateMicroBenchmark
-    public void timeJacksonVulgaris() throws IOException {
-        final String customer_string = jsonSerialization.serialize(testCustomerStub);
-    }
+	@GenerateMicroBenchmark
+	public void timeManualOptimizedJsonStreaming() throws IOException {
+		final StringWriter sw = new StringWriter();
+		CustomerManualOptJsonSerialization.serialize(sw, testCustomerStub);
+		final String customer_string = sw.toString();
+	}
 
-    @GenerateMicroBenchmark
-    public void timeJacksonAfterBurner() throws IOException {
-        final String customer_string = afterburnerSerialization.serialize(testCustomerStub);
-    }
+	@GenerateMicroBenchmark
+	public void timeProtobufferJson() throws IOException {
+		byte[] protobufCustTest = testProtobufCustomerStub.toByteArray();
+	}
 
-    @GenerateMicroBenchmark
-    public void timeJacksonStreaming() throws IOException {
-        final String customer_string = CustomerJacksonStreamingSerialization.serialize(jsonFactory, testCustomerStub);
-    }
+	private static long getTransactionsNum(final Customer c) {
+		long sum = 0;
+		for (final Account a : c.getAccounts()) {
+			sum += a.getTransactions().size();
+		}					
+		
+		return sum;		
+	}
+	
+	private static long getTransactionsNum(final AccountingProtobuf.Customer c) {
+		long sum = 0;
+		for (final AccountingProtobuf.Account a : c.getAccountsList()) {
+			sum += a.getTransactionsList().size();			
+		}			
 
-//    @GenerateMicroBenchmark
-//    public void timeManualJsonStreaming() throws IOException {
-//        final String customer_string = CustomerManualJsonStreaming.serialize(testCustomerStub);
-//    }
-
-    @GenerateMicroBenchmark
-    public void timeManualOptimizedJsonStreaming() throws IOException {
-        final StringWriter sw = new StringWriter();
-        CustomerManualOptJsonSerialization.serialize(sw, testCustomerStub);
-        final String customer_string = sw.toString();
-    }
-
-//    @GenerateMicroBenchmark
-//    public void timeProtobufferJson() throws IOException {
-//        for(int r=0; r<testCustomerStubs.length ; r++){
-//            final Message.Builder builder = CustomeringProtobuf.Customer.newBuilder();
-//            JsonFormat.merge(testCustomerStubs[r], builder);
-//        }
-//    }
-
-    private static long getTransactionsNum(final Customer c){
-        long sum=0;
-        for(final Account a : c.getAccounts()){
-            sum+=a.getTransactions().size();
-        }
-
-        return sum;
-    }
+		return sum;
+	}
 }

@@ -10,6 +10,7 @@ import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.dslplatform.model.Accounting.Transaction;
+import com.javacro.protobuf.model.accounting.AccountingProtobuf;
 
 public class TestCases {
 
@@ -131,18 +132,10 @@ public class TestCases {
         return new ArrayList<String>(Arrays.asList(getAccountUseCasesArray()));
     }
 
-    public static String getSmallCustomerUseCase() {
-        return getCustomerUseCases().get(5);
-
-    }
-
     public static String[] getCustomerUseCasesArray() {
         return getCustomerUseCases().toArray(new String[getCustomerUseCases().size()]);
     }
-
-    public static String getBigAssCustomerUseCase() {
-        return getBigAssCustomerUseCases().get(5);
-    }
+    
     public static List<String> getBigAssCustomerUseCases() {
         final List<String> custs =
                 new ArrayList<String>(
@@ -214,19 +207,19 @@ public class TestCases {
         final List<Transaction> ts = new ArrayList<Transaction>();
 
         for(int i=0;i<1000;i++){
-
-        ts.addAll(Arrays.asList(new Transaction[] { new Transaction(),
-                new Transaction(1, 0, "", DateTime.now()), new Transaction(1, 1, "abcde", DateTime.now()),
-                new Transaction(0, 1, "abcde", DateTime.now()), new Transaction(0, 0, "ABCDE", DateTime.now()), }));
+        	ts.addAll(getTransactionStubs());
         }
 
         return ts;
     }
 
     public static List<Transaction> getTransactionStubs() {
-        return new ArrayList<Transaction>(Arrays.asList(new Transaction[] { new Transaction(),
-                new Transaction(1, 0, "", DateTime.now()), new Transaction(1, 1, "abcde", DateTime.now()),
-                new Transaction(0, 1, "abcde", DateTime.now()), new Transaction(0, 0, "ABCDE", DateTime.now()), }));
+        return Arrays.asList(new Transaction[] { 
+        		new Transaction(),
+                new Transaction(1, 0, "", DateTime.now()), 
+                new Transaction(1, 1, "abcde", DateTime.now()),
+                new Transaction(0, 1, "abcde", DateTime.now()), 
+                new Transaction(0, 0, "ABCDE", DateTime.now()), });
     }
 
     public static List<Account> getBigAssAccountStubs() {
@@ -279,11 +272,148 @@ public class TestCases {
         return stubs;
     }
 
-    public static Customer getSmallCustomer() {
-        return getCustomerStubs().get(3);
+    public static Customer getSmallCustomer() {    	    	
+        Customer c = new Customer();
+        Account a = new Account();        
+        
+        a.setCurrency("HRK");
+        a.setIBAN("HR1234567");
+        
+        List<Transaction> ts = new ArrayList<Transaction>();
+        for(int i = 0 ; i < 50 ; i ++){
+        	ts.add(new Transaction(1,1,"Transaction description",DateTime.now()));
+        }
+        
+        a.getTransactions().addAll(ts);        
+        
+        List<Account> as = new ArrayList<Account>();
+        as.add(a);
+        c.setAccounts(as);
+        
+        return c;        
     }
 
     public static Customer getBigAssCustomer() {
-        return getBigAssCustomerStubs().get(3);
+    	Customer c = new Customer();
+        Account a = new Account();
+        
+        a.setCurrency("HRK");
+        a.setIBAN("HR1234567");
+        
+        List<Transaction> ts = new ArrayList<Transaction>();
+        for(int i = 0 ; i < 10000 ; i ++){
+        	ts.add(new Transaction(1,1,"Transaction description",DateTime.now()));
+        }
+        
+        a.getTransactions().addAll(ts);        
+        
+        List<Account> as = new ArrayList<Account>();
+        as.add(a);
+        c.setAccounts(as);
+                
+        return c;                
+    }
+    
+    public static String getSmallCustomerUseCase() {
+        Customer c = getSmallCustomer();
+        c.setId(1);
+        c.setName("TestniMaliCustomer");
+        
+        Profile p = c.getProfile();        		                      
+        
+        List<Account> as = c.getAccounts();
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("{");
+//        sb.append("\"uri\":\""+c.getURI()+"\"");              
+        sb.append("\"id\":"+c.getId());        
+        sb.append(",\"name\":"+"\""+c.getName()+"\"");
+        sb.append(",\"profile\":");
+        sb.append("{");
+        sb.append("\"email\":"+"\""+p.getEmail()+"\"");
+        sb.append(",\"phoneNumber\":"+"\""+p.getPhoneNumber()+"\"");
+        sb.append("}");
+        sb.append(",\"accounts\":");
+        sb.append("[");        
+        boolean aCm=false;
+        for(Account a : as){
+        	if(aCm) sb.append(",");
+    		aCm = true;
+        	sb.append("{");
+        	sb.append("\"IBAN\":\""+a.getIBAN()+"\"");
+        	sb.append(",\"currency\":\""+a.getCurrency()+"\"");
+        	sb.append(",\"transactions\":");
+        	sb.append("[");
+        	boolean tCm=false;
+        	for(Transaction t : a.getTransactions()){
+        		if(tCm) sb.append(",");
+        		tCm = true;
+        		sb.append("{");
+        		sb.append("\"description\":\""+t.getDescription()+"\"");
+        		sb.append(",\"inflow\":"+t.getInflow());
+        		sb.append(",\"outflow\":"+t.getOutflow());
+        		sb.append(",\"paymentOn\":\""+t.getPaymentOn().toString()+"\"");
+        		sb.append("}");        		
+        	}
+        	sb.append("]");    
+        	sb.append("}");        	
+        }
+        sb.append("]");        
+        sb.append("}");
+        
+        return sb.toString();		
+    }
+    
+    public static String getBigAssCustomerUseCase() {
+        Customer c = getBigAssCustomer();
+        
+        c.setId(1);
+        c.setName("TestniVelkiCustomer");        
+        
+        Profile p = c.getProfile();        		       
+        
+        List<Account> as = c.getAccounts();
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("{");
+//        sb.append("\"URI\":\""+c.getURI()+"\"");              
+        sb.append("\"id\":"+c.getId());        
+        sb.append(",\"name\":"+"\""+c.getName()+"\"");
+        sb.append(",\"profile\":");
+        sb.append("{");
+        sb.append("\"email\":"+"\""+p.getEmail()+"\"");
+        sb.append(",\"phoneNumber\":"+"\""+p.getPhoneNumber()+"\"");
+        sb.append("}");
+        sb.append(",\"accounts\":");
+        sb.append("[");
+        boolean aCm = false;
+        for(Account a : as){
+        	if(aCm) sb.append(",");
+    		aCm = true;
+        	sb.append("{");
+        	sb.append("\"IBAN\":\""+a.getIBAN()+"\"");
+        	sb.append(",\"currency\":\""+a.getCurrency()+"\"");
+        	sb.append(",\"transactions\":");
+        	sb.append("[");
+        	boolean tCm = false;
+        	for(Transaction t : a.getTransactions()){
+        		if(tCm) sb.append(",");
+        		tCm = true;
+        		sb.append("{");
+        		sb.append("\"description\":\""+t.getDescription()+"\"");
+        		sb.append(",\"inflow\":"+t.getInflow());
+        		sb.append(",\"outflow\":"+t.getOutflow());
+        		sb.append(",\"paymentOn\":\""+t.getPaymentOn().toString()+"\"");
+        		sb.append("}");        		
+        	}
+        	sb.append("]");    
+        	sb.append("}");        	
+        }
+        sb.append("]");        
+        sb.append("}");
+        
+        return sb.toString();
     }
 }
