@@ -8,6 +8,7 @@ import org.joda.time.DateTime;
 
 import com.javacro.dslplatform.model.Accounting.Transaction;
 import com.javacro.serialization.io.jvm.json.JsonReader;
+import com.javacro.serialization.io.jvm.json.JsonReaderOptimized;
 
 public abstract class TransactionManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Transaction value) throws IOException {
@@ -187,4 +188,80 @@ public abstract class TransactionManualOptJsonSerialization {
 		}
         return new Transaction(_inFlow, _outFlow, _description, _paymentOn);
     }    
+    
+    public static Transaction deserialize(final JsonReaderOptimized reader) throws IOException {
+        double _inFlow = 0.0;
+        double _outFlow = 0.0;
+        String _description = "";
+        DateTime _paymentOn = DateTimeConverter.minDate;
+    	if (reader.last() == '}') return new Transaction(_inFlow, _outFlow, _description, _paymentOn);
+    	int nameHash = reader.fillName();
+    	int nextToken = reader.getNextToken();
+    	if (nextToken == 'n') {
+    		if (reader.read() != 'u' || reader.read() != 'l' || reader.read() != 'l') 
+    			throw new IOException("null value expected");
+    	}
+    	else {
+	    	switch(nameHash) {
+				case 2048542378:
+					_inFlow = Double.parseDouble(reader.readShortValue());
+					nextToken = reader.last();
+					break;
+				case 323510661:
+					_outFlow = Double.parseDouble(reader.readShortValue());
+					nextToken = reader.last();
+					break;
+				case 1244356485:
+					_description = reader.readString();
+					nextToken = reader.getNextToken();
+					break;
+				case -311362482:
+					_paymentOn = DateTime.parse(reader.readSimpleString());
+					nextToken = reader.getNextToken();
+					break;
+				default:
+					nextToken = reader.skip();
+					break;
+	    	}	    			
+    	}
+    	while (nextToken == ',') {
+    		nextToken = reader.getNextToken();
+        	nameHash = reader.fillName();
+        	nextToken = reader.getNextToken();
+        	if (nextToken == 'n') {
+        		if (reader.read() == 'u' && reader.read() == 'l' && reader.read() == 'l') {
+            		nextToken = reader.getNextToken();
+        			continue;
+        		}
+        		throw new IOException("null value expected");
+        	}
+        	else {
+    	    	switch(nameHash) {
+    				case 2048542378:
+    					_inFlow = Double.parseDouble(reader.readShortValue());
+    					nextToken = reader.last();
+    					break;
+    				case 323510661:
+    					_outFlow = Double.parseDouble(reader.readShortValue());
+    					nextToken = reader.last();
+    					break;
+    				case 1244356485:
+    					_description = reader.readString();
+    					nextToken = reader.getNextToken();
+    					break;
+    				case -311362482:
+    					_paymentOn = DateTime.parse(reader.readSimpleString());
+    					nextToken = reader.getNextToken();
+    					break;
+    				default:
+    					nextToken = reader.skip();
+    					break;
+    	    	}	    			
+        	}
+    	}
+		if (nextToken != '}') {
+			throw new IOException("Expecting '}' at position " + reader.positionInStream() + ". Found " + (char)nextToken);
+		}
+        return new Transaction(_inFlow, _outFlow, _description, _paymentOn);
+    }
 }

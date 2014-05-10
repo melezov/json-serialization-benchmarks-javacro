@@ -43,4 +43,8 @@ public class NumberConverter {
 		tokens[0] = nextToken;
 		return Integer.parseInt(new String(buffer, 0, ind));
 	}
+	
+	public static int deserializeInt(final char[] buffer, final int len) throws IOException {
+		return Integer.parseInt(new String(buffer, 0, len));
+	}	
 }

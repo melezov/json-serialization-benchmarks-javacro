@@ -15,6 +15,7 @@ public class Customer implements java.io.Serializable,
 
     private String URI;
 
+    @com.fasterxml.jackson.annotation.JsonIgnore
     public boolean isNewAggregate() { return _serviceLocator == null; }
 
     @Override

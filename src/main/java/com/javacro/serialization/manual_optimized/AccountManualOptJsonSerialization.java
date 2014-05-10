@@ -9,6 +9,7 @@ import java.util.List;
 import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Transaction;
 import com.javacro.serialization.io.jvm.json.JsonReader;
+import com.javacro.serialization.io.jvm.json.JsonReaderOptimized;
 
 public abstract class AccountManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Account value) throws IOException {
@@ -210,5 +211,91 @@ public abstract class AccountManualOptJsonSerialization {
 		}
         return new Account(_iban, _currency, _transactions);
     }
-    
+
+    public static Account deserialize(final JsonReaderOptimized reader) throws IOException {
+        String _iban = "";
+        String _currency = "";
+        ArrayList<Transaction> _transactions = new ArrayList<Transaction>();
+    	if (reader.last() == '}') return new Account(_iban, _currency, _transactions);
+    	int nameHash = reader.fillName();
+    	int nextToken = reader.getNextToken();
+    	if (nextToken == 'n') {
+    		if (reader.read() != 'u' || reader.read() != 'l' || reader.read() != 'l') 
+    			throw new IOException("null value expected");
+    	}
+    	else {
+	    	switch(nameHash) {
+				case 23481245:
+					_iban = reader.readString();
+					nextToken = reader.getNextToken();
+					break;
+				case 1953622312:
+					_currency = reader.readString();
+					nextToken = reader.getNextToken();
+					break;
+				case -499179796:
+					if (nextToken != '[') throw new IOException("Expecting '['");
+					nextToken = reader.getNextToken();
+					if (nextToken != '{') throw new IOException("Expecting '{'");
+					nextToken = reader.getNextToken();
+					_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
+					while((nextToken = reader.getNextToken()) == ',') {
+						nextToken = reader.getNextToken();
+						if (nextToken != '{') throw new IOException("Expecting '{'");
+						nextToken = reader.getNextToken();
+						_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
+					}
+					nextToken = reader.getNextToken();
+					break;
+				default:
+					nextToken = reader.skip();
+					break;
+	    	}	    			
+    	}
+    	while (nextToken == ',') {
+    		nextToken = reader.getNextToken();
+        	nameHash = reader.fillName();
+        	nextToken = reader.getNextToken();
+        	if (nextToken == 'n') {
+        		if (reader.read() == 'u' && reader.read() == 'l' && reader.read() == 'l') {
+            		nextToken = reader.getNextToken();
+        			continue;
+        		}
+        		throw new IOException("null value expected");
+        	}
+        	else {
+    	    	switch(nameHash) {
+    				case 23481245:
+    					_iban = reader.readString();
+    					nextToken = reader.getNextToken();
+    					break;
+    				case 1953622312:
+    					_currency = reader.readString();
+    					nextToken = reader.getNextToken();
+    					break;
+    				case -499179796:
+    					if (nextToken != '[') throw new IOException("Expecting '['");
+    					nextToken = reader.getNextToken();
+    					if (nextToken != '{') throw new IOException("Expecting '{'");
+    					nextToken = reader.getNextToken();
+    					_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
+    					while((nextToken = reader.getNextToken()) == ',') {
+    						nextToken = reader.getNextToken();
+    						if (nextToken != '{') throw new IOException("Expecting '{'");
+    						nextToken = reader.getNextToken();
+    						_transactions.add(TransactionManualOptJsonSerialization.deserialize(reader));
+    					}
+    					nextToken = reader.getNextToken();
+    					break;
+    				default:
+    					nextToken = reader.skip();
+    					break;
+    	    	}	    			
+        	}
+    	}
+		if (nextToken != '}') {
+			throw new IOException("Expecting '}' at position " + reader.positionInStream() + ". Found " + (char)nextToken);
+		}
+        return new Account(_iban, _currency, _transactions);
+    }
 }
