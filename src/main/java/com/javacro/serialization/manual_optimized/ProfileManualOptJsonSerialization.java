@@ -6,6 +6,7 @@ import java.io.Writer;
 
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.serialization.io.jvm.json.JsonReader;
+import com.javacro.serialization.io.jvm.json.JsonReaderOptimized;
 
 public abstract class ProfileManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Profile value) throws IOException {
@@ -143,6 +144,64 @@ public abstract class ProfileManualOptJsonSerialization {
         if (nextToken != '}') {
             if (nextToken == -1) throw new IOException("Unexpected end of json in object Transaction");
             else throw new IOException("Expecting '}' at position " + reader.positionInStream() + ". Found " + (char)nextToken);
+        }
+        return new Profile(_email, _phoneNumber);
+    }
+    
+    public static Profile deserialize(final JsonReaderOptimized reader) throws IOException {
+        String _email = null;
+        String _phoneNumber = null;
+        if (reader.last() == '}') return new Profile(_email, _phoneNumber);
+        int nameHash = reader.fillName();
+        int nextToken = reader.getNextToken();
+        if (nextToken == 'n') {
+            if (reader.read() != 'u' || reader.read() != 'l' || reader.read() != 'l')
+                throw new IOException("null value expected");
+        }
+        else {
+            switch(nameHash) {
+                case 755089893:
+                    _email= reader.readString();
+                    nextToken = reader.getNextToken();
+                    break;
+                case 1775932896:
+                    _phoneNumber = reader.readString();
+                    nextToken = reader.getNextToken();
+                    break;
+                default:
+                    nextToken = reader.skip();
+                    break;
+            }
+        }
+        while (nextToken == ',') {
+            nextToken = reader.getNextToken();
+            nameHash = reader.fillName();
+            nextToken = reader.getNextToken();
+            if (nextToken == 'n') {
+                if (reader.read() == 'u' && reader.read() == 'l' && reader.read() == 'l') {
+                    nextToken = reader.getNextToken();
+                    continue;
+                }
+                throw new IOException("null value expected");
+            }
+            else {
+                switch(nameHash) {
+	                case 755089893:
+	                    _email= reader.readString();
+	                    nextToken = reader.getNextToken();
+	                    break;
+	                case 1775932896:
+	                    _phoneNumber = reader.readString();
+	                    nextToken = reader.getNextToken();
+	                    break;
+	                default:
+	                    nextToken = reader.skip();
+	                    break;
+                }
+            }
+        }
+        if (nextToken != '}') {
+            throw new IOException("Expecting '}' at position " + reader.positionInStream() + ". Found " + (char)nextToken);
         }
         return new Profile(_email, _phoneNumber);
     }

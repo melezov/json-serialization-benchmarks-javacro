@@ -68,9 +68,10 @@ public class JsonSerializationBenchmarks {
         try {
             benchmark.buildUp();
 
-            final int NUM_TESTS = 5000;
+            final int NUM_TESTS = 500;
+            final int test = 0;
             
-            for (int cnt = 1; cnt <= 1; cnt++) {
+            for (int cnt = 1; cnt <= 2; cnt++) {
 
             System.out.println();
             System.out.println("=====");
@@ -79,7 +80,7 @@ public class JsonSerializationBenchmarks {
             System.out.println("# Number of transactions: " + getTransactionsNum(benchmark.testCustomerStub));
             System.out.println("=====");
 
-            {
+            if (test == 0 || test == 1) {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -93,7 +94,7 @@ public class JsonSerializationBenchmarks {
 //                System.out.println("JacksonAfterBurner (testRate): " + sumaSumarum);
             }
 
-            {
+            if (test == 0 || test == 2) {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -107,7 +108,7 @@ public class JsonSerializationBenchmarks {
 //                System.out.println("JacksonStreaming (testRate): " + sumaSumarum);
             }
 
-            {
+            if (test == 0 || test == 3) {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -135,7 +136,7 @@ public class JsonSerializationBenchmarks {
 ////                System.out.println("ManualJsonStreaming (testRate): " + sumaSumarum);
 //            }
 
-            {
+            if (test == 0 || test == 5) {
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
                     benchmark.timeManualOptimizedJsonStreaming();

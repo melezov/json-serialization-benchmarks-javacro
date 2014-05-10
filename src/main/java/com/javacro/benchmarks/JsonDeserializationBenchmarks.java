@@ -65,9 +65,10 @@ public class JsonDeserializationBenchmarks {
         try {
             benchmark.buildUp();
 
-            final int NUM_TESTS = 500;//5000;
+            final int NUM_TESTS = 100;
+            final int test = 0;
             
-            for (int cnt = 1; cnt <= 1; cnt ++) {
+            for (int cnt = 1; cnt <= 2; cnt ++) {
 
             System.out.println();
             System.out.println("=====");
@@ -75,9 +76,8 @@ public class JsonDeserializationBenchmarks {
             System.out.println("# Number of tests: " + NUM_TESTS);
             System.out.println("# Number of transactions: ?");
             System.out.println("=====");
-            //final int test = 5;
 
-            {
+            if (test == 0 || test == 1) {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -91,7 +91,7 @@ public class JsonDeserializationBenchmarks {
 //                System.out.println("JacksonAfterBurner (testRate): " + sumaSumarum);
             }
 
-            {
+            if (test == 0 || test == 2) {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -102,10 +102,10 @@ public class JsonDeserializationBenchmarks {
                 stats.add(benchmark.new Stats("JacksonStreaming", sumaSumarum, sumaSumarum/NUM_TESTS));
 
                 System.out.printf("JacksonStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
-//                System.out.println("JacksonStreaming (testRate): " + sumaSumarum);
+  //              System.out.println("JacksonStreaming (testRate): " + sumaSumarum);
             }
 
-            {
+            if (test == 0 || test == 3) {
                 double sumaSumarum = 0;
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
@@ -133,16 +133,31 @@ public class JsonDeserializationBenchmarks {
 ////                System.out.println("ManualJsonStreaming (testRate): " + sumaSumarum);
 //            }
 
-            {
+            if (test == 0 || test == 5) {
                 final long startAt = System.currentTimeMillis();
                 for (int i = 0; i < NUM_TESTS; i++) {
                     benchmark.timeManualOptimizedJsonStreaming();
+                    //System.out.println(i);
                 }
                 final long endAt = System.currentTimeMillis();
                 final double sumaSumarum = endAt - startAt;
                 stats.add(benchmark.new Stats("ManualOptStreaming", sumaSumarum, sumaSumarum/NUM_TESTS));
 
                 System.out.printf("ManualOptimizedStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
+//                System.out.println("ManualOptimizedJsonStreaming (testRate): " + sumaSumarum);
+            }
+
+            if (test == 0 || test == 6) {
+                final long startAt = System.currentTimeMillis();
+                for (int i = 0; i < NUM_TESTS; i++) {
+                    benchmark.timeManualOptimizedJsonStreamingNew();
+                    //System.out.println(i);
+                }
+                final long endAt = System.currentTimeMillis();
+                final double sumaSumarum = endAt - startAt;
+                stats.add(benchmark.new Stats("ManualOptNewStreaming", sumaSumarum, sumaSumarum/NUM_TESTS));
+
+                System.out.printf("ManualOptimizedNewStreaming (ms/tests):\t\t%.2f %n",  sumaSumarum / NUM_TESTS);
 //                System.out.println("ManualOptimizedJsonStreaming (testRate): " + sumaSumarum);
             }
 
@@ -215,6 +230,13 @@ public class JsonDeserializationBenchmarks {
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreaming() throws IOException {
         final Customer customer = CustomerManualOptJsonSerialization.deserializeWith(useCaseBytes);
+        //System.out.println(customer);
+        //System.out.println(getTransactionsNum(customer));
+    }
+
+    @GenerateMicroBenchmark
+    public void timeManualOptimizedJsonStreamingNew() throws IOException {
+        final Customer customer = CustomerManualOptJsonSerialization.deserializeOptimized(useCaseBytes);
         //System.out.println(customer);
         //System.out.println(getTransactionsNum(customer));
     }

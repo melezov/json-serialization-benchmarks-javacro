@@ -12,6 +12,7 @@ import com.javacro.dslplatform.model.Accounting.Account;
 import com.javacro.dslplatform.model.Accounting.Customer;
 import com.javacro.dslplatform.model.Accounting.Profile;
 import com.javacro.serialization.io.jvm.json.JsonReader;
+import com.javacro.serialization.io.jvm.json.JsonReaderOptimized;
 
 public abstract class CustomerManualOptJsonSerialization {
     public static void serialize(final Writer writer, final Customer value) throws IOException {
@@ -51,6 +52,12 @@ public abstract class CustomerManualOptJsonSerialization {
 
     public static Customer deserializeWith(final byte[] inputBytes) throws IOException {
         final JsonReader reader = new JsonReader(inputBytes);
+        if(reader.getNextToken() != '{') throw new IOException("Expecting '{'");
+        return deserialize(reader, null);
+    }
+
+    public static Customer deserializeOptimized(final byte[] inputBytes) throws IOException {
+        final JsonReaderOptimized reader = new JsonReaderOptimized(inputBytes);
         if(reader.getNextToken() != '{') throw new IOException("Expecting '{'");
         return deserialize(reader, null);
     }
@@ -284,5 +291,113 @@ public abstract class CustomerManualOptJsonSerialization {
         }
         return new Customer(_uri, _id, _name, _profile, _accounts, locator);
     }
-
+    
+    public static Customer deserialize(final JsonReaderOptimized reader, final ServiceLocator locator) throws IOException {
+        String _uri = "";
+        long _id = 0L;
+        String _name = "";
+        Profile _profile = new Profile();
+        ArrayList<Account> _accounts = null;
+        if (reader.getNextToken() == '}') return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+        int nameHash = reader.fillName();
+        int nextToken = reader.getNextToken();
+        if (nextToken == 'n') {
+            if (reader.read() != 'u' || reader.read() != 'l' || reader.read() != 'l')
+                throw new IOException("null value expected");
+        }
+        else {
+            switch(nameHash) {
+                case 1:
+                    _uri = reader.readString();
+                    nextToken = reader.getNextToken();
+                    break;
+                case 25458:
+                    _id = Long.parseLong(reader.readShortValue());
+                    nextToken = reader.moveToNextToken();
+                    break;
+                case 24614690:
+                    _name = reader.readString();
+                    nextToken = reader.getNextToken();
+                    break;
+                case 1120506290:
+                    if (nextToken != '{') throw new IOException("Expecting '{'");
+                    nextToken = reader.getNextToken();
+                    _profile = ProfileManualOptJsonSerialization.deserialize(reader);
+                    nextToken = reader.getNextToken();
+                    break;
+                case -758926083:
+                    if (nextToken != '[') throw new IOException("Expecting '['");
+                    nextToken = reader.getNextToken();
+                    if (nextToken != '{') throw new IOException("Expecting '{'");
+                    _accounts = new ArrayList<Account>();
+                    _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
+                    while((nextToken = reader.getNextToken()) == ',') {
+                        nextToken = reader.getNextToken();
+                        if (nextToken != '{') throw new IOException("Expecting '{'");
+                        _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
+                    }
+                    nextToken = reader.getNextToken();
+                    break;
+                default:
+                    nextToken = reader.skip();
+                    break;
+            }
+        }
+        while (nextToken == ',') {
+            nextToken = reader.getNextToken();
+            nameHash = reader.fillName();
+            nextToken = reader.getNextToken();
+            if (nextToken == 'n') {
+                if (reader.read() == 'u' && reader.read() == 'l' && reader.read() == 'l') {
+                    nextToken = reader.getNextToken();
+                    continue;
+                }
+                throw new IOException("null value expected");
+            }
+            else {
+                switch(nameHash) {
+	                case 1:
+	                    _uri = reader.readString();
+	                    nextToken = reader.getNextToken();
+	                    break;
+	                case 25458:
+	                    _id = Long.parseLong(reader.readShortValue());
+	                    nextToken = reader.moveToNextToken();
+	                    break;
+	                case 24614690:
+	                    _name = reader.readString();
+	                    nextToken = reader.getNextToken();
+	                    break;
+	                case 1120506290:
+	                    if (nextToken != '{') throw new IOException("Expecting '{'");
+	                    nextToken = reader.getNextToken();
+	                    _profile = ProfileManualOptJsonSerialization.deserialize(reader);
+	                    nextToken = reader.getNextToken();
+	                    break;
+	                case -758926083:
+	                    if (nextToken != '[') throw new IOException("Expecting '['");
+	                    nextToken = reader.getNextToken();
+	                    if (nextToken != '{') throw new IOException("Expecting '{'");
+	                    nextToken = reader.getNextToken();
+	                    _accounts = new ArrayList<Account>();
+	                    _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
+	                    while((nextToken = reader.getNextToken()) == ',') {
+	                        nextToken = reader.getNextToken();
+	                        if (nextToken != '{') throw new IOException("Expecting '{'");
+	                        nextToken = reader.getNextToken();
+	                        _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
+	                    }
+	                    nextToken = reader.getNextToken();
+	                    break;
+	                default:
+	                    nextToken = reader.skip();
+	                    break;
+                }
+            }
+        }
+        if (nextToken != '}') {
+            throw new IOException("Expecting '}' at position " + reader.positionInStream() + ". Found " + (char)nextToken);
+        }
+        return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+    }
 }
