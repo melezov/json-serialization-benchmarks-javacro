@@ -50,9 +50,9 @@ public class JsonSerializationBenchmarks {
 	private JsonSerialization jsonSerialization;
 	private JacksonAfterburnerSerialization afterburnerSerialization;	
 	
-	private final Customer testCustomerStub = TestCases.getBigAssCustomer();
+	private final Customer testCustomerStub = TestCases.getSmallCustomer();
 	private final AccountingProtobuf.Customer 
-		testProtobufCustomerStub=TestCasesProtobuf.getBigAssCustomer();		
+		testProtobufCustomerStub=TestCasesProtobuf.getSmallCustomer();		
 
 	public static void main(final String[] args) {
 
@@ -203,8 +203,8 @@ public class JsonSerializationBenchmarks {
 		this.afterburnerSerialization = new JacksonAfterburnerSerialization(
 				locator);
 		
-		System.out.println("DSL object transactions: " + Util.getTransactionsNum(TestCases.getBigAssCustomer()));
-		System.out.println("Protobuf object transactions: " + Util.getTransactionsNum(TestCasesProtobuf.getBigAssCustomer()));
+		System.out.println("DSL object transactions: " + Util.getTransactionsNum(TestCases.getSmallCustomer()));
+		System.out.println("Protobuf object transactions: " + Util.getTransactionsNum(TestCasesProtobuf.getSmallCustomer()));
 	}
 
 	@GenerateMicroBenchmark
@@ -216,20 +216,20 @@ public class JsonSerializationBenchmarks {
 	public void timeJacksonVulgaris() throws IOException {
 		final String customer_string = jsonSerialization
 				.serialize(testCustomerStub);		
-		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
+//		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
 	}
 
 	@GenerateMicroBenchmark
 	public void timeJacksonAfterBurner() throws IOException {
 		final String customer_string = afterburnerSerialization.serialize(testCustomerStub);
-		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
+//		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
 	}
 
 	@GenerateMicroBenchmark
 	public void timeJacksonStreaming() throws IOException {
 		final String customer_string = CustomerJacksonStreamingSerialization
 				.serialize(jsonFactory, testCustomerStub);
-		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
+//		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
 	}
 
 
@@ -239,7 +239,7 @@ public class JsonSerializationBenchmarks {
 		CustomerManualOptJsonSerialization.serialize(sw, testCustomerStub);
 		final String customer_string = sw.toString();
 		
-		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
+//		AccountingProtobuf.Customer protobuf_customer = Util.toProtobuf(testCustomerStub);
 	}
 
 	@GenerateMicroBenchmark

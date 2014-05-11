@@ -6,147 +6,147 @@ Serializing objects to Json:
 Test pass:1
 # Number of tests: 500
 =====
-JacksonAfterBurner (ms/tests):		52.32
-JacksonStreaming (ms/tests):		45.70
-JacksonVulgaris (ms/tests):		45.03
-ManualOptStreaming (ms/tests):		40.61
-Protobuf streaming (ms/tests):		50.30
+JacksonAfterBurner (ms/tests):		41.87
+JacksonStreaming (ms/tests):		38.87
+JacksonVulgaris (ms/tests):		38.54
+ManualOptStreaming (ms/tests):		34.85
+Protobuf streaming (ms/tests):		59.35
 
 =====
 Totals: 1
 =====
-Test:	JacksonAfterBurner,	Total:	26161.00
-Test:	JacksonStreaming,	Total:	22851.00
-Test:	JacksonVulgaris,	Total:	22517.00
-Test:	ManualOptStreaming,	Total:	20304.00
-Test:	ProtobufStreaming,	Total:	25150.00
+Test:	JacksonAfterBurner,	Total:	20934.00
+Test:	JacksonStreaming,	Total:	19437.00
+Test:	JacksonVulgaris,	Total:	19270.00
+Test:	ManualOptStreaming,	Total:	17426.00
+Test:	ProtobufStreaming,	Total:	29676.00
 
 =====
 Serializing objects to Json:
 Test pass:2
 # Number of tests: 500
 =====
-JacksonAfterBurner (ms/tests):		44.19
-JacksonStreaming (ms/tests):		45.28
-JacksonVulgaris (ms/tests):		44.81
-ManualOptStreaming (ms/tests):		40.12
-Protobuf streaming (ms/tests):		49.64
+JacksonAfterBurner (ms/tests):		37.43
+JacksonStreaming (ms/tests):		38.64
+JacksonVulgaris (ms/tests):		38.76
+ManualOptStreaming (ms/tests):		33.59
+Protobuf streaming (ms/tests):		56.90
 
 =====
 Totals: 2
 =====
-Test:	JacksonAfterBurner,	Total:	26161.00
-Test:	JacksonStreaming,	Total:	22851.00
-Test:	JacksonVulgaris,	Total:	22517.00
-Test:	ManualOptStreaming,	Total:	20304.00
-Test:	ProtobufStreaming,	Total:	25150.00
-Test:	JacksonAfterBurner,	Total:	22093.00
-Test:	JacksonStreaming,	Total:	22639.00
-Test:	JacksonVulgaris,	Total:	22404.00
-Test:	ManualOptStreaming,	Total:	20062.00
-Test:	ProtobufStreaming,	Total:	24820.00
+Test:	JacksonAfterBurner,	Total:	20934.00
+Test:	JacksonStreaming,	Total:	19437.00
+Test:	JacksonVulgaris,	Total:	19270.00
+Test:	ManualOptStreaming,	Total:	17426.00
+Test:	ProtobufStreaming,	Total:	29676.00
+Test:	JacksonAfterBurner,	Total:	18713.00
+Test:	JacksonStreaming,	Total:	19321.00
+Test:	JacksonVulgaris,	Total:	19381.00
+Test:	ManualOptStreaming,	Total:	16793.00
+Test:	ProtobufStreaming,	Total:	28449.00
 
 =====
 Serializing objects to Json:
 Test pass:3
 # Number of tests: 500
 =====
-JacksonAfterBurner (ms/tests):		44.23
-JacksonStreaming (ms/tests):		45.15
-JacksonVulgaris (ms/tests):		44.67
-ManualOptStreaming (ms/tests):		40.19
-Protobuf streaming (ms/tests):		49.15
+JacksonAfterBurner (ms/tests):		37.78
+JacksonStreaming (ms/tests):		38.90
+JacksonVulgaris (ms/tests):		41.49
+ManualOptStreaming (ms/tests):		37.39
+Protobuf streaming (ms/tests):		58.32
 
 =====
 Totals: 3
 =====
-Test:	JacksonAfterBurner,	Total:	26161.00
-Test:	JacksonStreaming,	Total:	22851.00
-Test:	JacksonVulgaris,	Total:	22517.00
-Test:	ManualOptStreaming,	Total:	20304.00
-Test:	ProtobufStreaming,	Total:	25150.00
-Test:	JacksonAfterBurner,	Total:	22093.00
-Test:	JacksonStreaming,	Total:	22639.00
-Test:	JacksonVulgaris,	Total:	22404.00
-Test:	ManualOptStreaming,	Total:	20062.00
-Test:	ProtobufStreaming,	Total:	24820.00
-Test:	JacksonAfterBurner,	Total:	22114.00
-Test:	JacksonStreaming,	Total:	22574.00
-Test:	JacksonVulgaris,	Total:	22334.00
-Test:	ManualOptStreaming,	Total:	20097.00
-Test:	ProtobufStreaming,	Total:	24574.00
+Test:	JacksonAfterBurner,	Total:	20934.00
+Test:	JacksonStreaming,	Total:	19437.00
+Test:	JacksonVulgaris,	Total:	19270.00
+Test:	ManualOptStreaming,	Total:	17426.00
+Test:	ProtobufStreaming,	Total:	29676.00
+Test:	JacksonAfterBurner,	Total:	18713.00
+Test:	JacksonStreaming,	Total:	19321.00
+Test:	JacksonVulgaris,	Total:	19381.00
+Test:	ManualOptStreaming,	Total:	16793.00
+Test:	ProtobufStreaming,	Total:	28449.00
+Test:	JacksonAfterBurner,	Total:	18890.00
+Test:	JacksonStreaming,	Total:	19449.00
+Test:	JacksonVulgaris,	Total:	20743.00
+Test:	ManualOptStreaming,	Total:	18694.00
+Test:	ProtobufStreaming,	Total:	29158.00
 
 =====
 Serializing objects to Json:
 Test pass:4
 # Number of tests: 500
 =====
-JacksonAfterBurner (ms/tests):		44.24
-JacksonStreaming (ms/tests):		45.11
-JacksonVulgaris (ms/tests):		44.78
-ManualOptStreaming (ms/tests):		42.04
-Protobuf streaming (ms/tests):		50.73
+JacksonAfterBurner (ms/tests):		40.19
+JacksonStreaming (ms/tests):		41.38
+JacksonVulgaris (ms/tests):		42.91
+ManualOptStreaming (ms/tests):		34.43
+Protobuf streaming (ms/tests):		58.68
 
 =====
 Totals: 4
 =====
-Test:	JacksonAfterBurner,	Total:	26161.00
-Test:	JacksonStreaming,	Total:	22851.00
-Test:	JacksonVulgaris,	Total:	22517.00
-Test:	ManualOptStreaming,	Total:	20304.00
-Test:	ProtobufStreaming,	Total:	25150.00
-Test:	JacksonAfterBurner,	Total:	22093.00
-Test:	JacksonStreaming,	Total:	22639.00
-Test:	JacksonVulgaris,	Total:	22404.00
-Test:	ManualOptStreaming,	Total:	20062.00
-Test:	ProtobufStreaming,	Total:	24820.00
-Test:	JacksonAfterBurner,	Total:	22114.00
-Test:	JacksonStreaming,	Total:	22574.00
-Test:	JacksonVulgaris,	Total:	22334.00
-Test:	ManualOptStreaming,	Total:	20097.00
-Test:	ProtobufStreaming,	Total:	24574.00
-Test:	JacksonAfterBurner,	Total:	22121.00
-Test:	JacksonStreaming,	Total:	22557.00
-Test:	JacksonVulgaris,	Total:	22391.00
-Test:	ManualOptStreaming,	Total:	21018.00
-Test:	ProtobufStreaming,	Total:	25367.00
+Test:	JacksonAfterBurner,	Total:	20934.00
+Test:	JacksonStreaming,	Total:	19437.00
+Test:	JacksonVulgaris,	Total:	19270.00
+Test:	ManualOptStreaming,	Total:	17426.00
+Test:	ProtobufStreaming,	Total:	29676.00
+Test:	JacksonAfterBurner,	Total:	18713.00
+Test:	JacksonStreaming,	Total:	19321.00
+Test:	JacksonVulgaris,	Total:	19381.00
+Test:	ManualOptStreaming,	Total:	16793.00
+Test:	ProtobufStreaming,	Total:	28449.00
+Test:	JacksonAfterBurner,	Total:	18890.00
+Test:	JacksonStreaming,	Total:	19449.00
+Test:	JacksonVulgaris,	Total:	20743.00
+Test:	ManualOptStreaming,	Total:	18694.00
+Test:	ProtobufStreaming,	Total:	29158.00
+Test:	JacksonAfterBurner,	Total:	20094.00
+Test:	JacksonStreaming,	Total:	20690.00
+Test:	JacksonVulgaris,	Total:	21453.00
+Test:	ManualOptStreaming,	Total:	17217.00
+Test:	ProtobufStreaming,	Total:	29340.00
 
 =====
 Serializing objects to Json:
 Test pass:5
 # Number of tests: 500
 =====
-JacksonAfterBurner (ms/tests):		44.96
-JacksonStreaming (ms/tests):		47.33
-JacksonVulgaris (ms/tests):		47.14
-ManualOptStreaming (ms/tests):		40.53
-Protobuf streaming (ms/tests):		51.01
+JacksonAfterBurner (ms/tests):		39.02
+JacksonStreaming (ms/tests):		40.89
+JacksonVulgaris (ms/tests):		38.55
+ManualOptStreaming (ms/tests):		29.34
+Protobuf streaming (ms/tests):		52.33
 
 =====
 Totals: 5
 =====
-Test:	JacksonAfterBurner,	Total:	26161.00
-Test:	JacksonStreaming,	Total:	22851.00
-Test:	JacksonVulgaris,	Total:	22517.00
-Test:	ManualOptStreaming,	Total:	20304.00
-Test:	ProtobufStreaming,	Total:	25150.00
-Test:	JacksonAfterBurner,	Total:	22093.00
-Test:	JacksonStreaming,	Total:	22639.00
-Test:	JacksonVulgaris,	Total:	22404.00
-Test:	ManualOptStreaming,	Total:	20062.00
-Test:	ProtobufStreaming,	Total:	24820.00
-Test:	JacksonAfterBurner,	Total:	22114.00
-Test:	JacksonStreaming,	Total:	22574.00
-Test:	JacksonVulgaris,	Total:	22334.00
-Test:	ManualOptStreaming,	Total:	20097.00
-Test:	ProtobufStreaming,	Total:	24574.00
-Test:	JacksonAfterBurner,	Total:	22121.00
-Test:	JacksonStreaming,	Total:	22557.00
-Test:	JacksonVulgaris,	Total:	22391.00
-Test:	ManualOptStreaming,	Total:	21018.00
-Test:	ProtobufStreaming,	Total:	25367.00
-Test:	JacksonAfterBurner,	Total:	22478.00
-Test:	JacksonStreaming,	Total:	23667.00
-Test:	JacksonVulgaris,	Total:	23572.00
-Test:	ManualOptStreaming,	Total:	20264.00
-Test:	ProtobufStreaming,	Total:	25503.00
+Test:	JacksonAfterBurner,	Total:	20934.00
+Test:	JacksonStreaming,	Total:	19437.00
+Test:	JacksonVulgaris,	Total:	19270.00
+Test:	ManualOptStreaming,	Total:	17426.00
+Test:	ProtobufStreaming,	Total:	29676.00
+Test:	JacksonAfterBurner,	Total:	18713.00
+Test:	JacksonStreaming,	Total:	19321.00
+Test:	JacksonVulgaris,	Total:	19381.00
+Test:	ManualOptStreaming,	Total:	16793.00
+Test:	ProtobufStreaming,	Total:	28449.00
+Test:	JacksonAfterBurner,	Total:	18890.00
+Test:	JacksonStreaming,	Total:	19449.00
+Test:	JacksonVulgaris,	Total:	20743.00
+Test:	ManualOptStreaming,	Total:	18694.00
+Test:	ProtobufStreaming,	Total:	29158.00
+Test:	JacksonAfterBurner,	Total:	20094.00
+Test:	JacksonStreaming,	Total:	20690.00
+Test:	JacksonVulgaris,	Total:	21453.00
+Test:	ManualOptStreaming,	Total:	17217.00
+Test:	ProtobufStreaming,	Total:	29340.00
+Test:	JacksonAfterBurner,	Total:	19511.00
+Test:	JacksonStreaming,	Total:	20445.00
+Test:	JacksonVulgaris,	Total:	19276.00
+Test:	ManualOptStreaming,	Total:	14669.00
+Test:	ProtobufStreaming,	Total:	26167.00

@@ -190,10 +190,10 @@ public class JsonDeserializationBenchmarks {
         this.jsonSerialization = locator.resolve(JsonSerialization.class);
         this.afterburnerSerialization = new JacksonAfterburnerSerialization(locator);
 
-        this.customerJsonSource_string = TestCases.getSmallCustomerUseCase();                
-		this.customerProtobufSource_byteArray = TestCasesProtobuf.getSmallCustomerUseCase();
-		System.out.println("DSL object transactions: " + Util.getTransactionsNum(TestCases.getSmallCustomer()));
-		System.out.println("Protobuf object transactions: " + Util.getTransactionsNum(TestCasesProtobuf.getSmallCustomer()));        
+        this.customerJsonSource_string = TestCases.getBigAssCustomerUseCase();                
+		this.customerProtobufSource_byteArray = TestCasesProtobuf.getBigAssCustomerUseCase();
+		System.out.println("DSL object transactions: " + Util.getTransactionsNum(TestCases.getBigAssCustomer()));
+		System.out.println("Protobuf object transactions: " + Util.getTransactionsNum(TestCasesProtobuf.getBigAssCustomer()));        
         
         this.customerJsonSource_bytes = customerJsonSource_string.getBytes("UTF-8");
         this.customerJsonSource_byteArrayInputStream = new ByteArrayInputStream(customerJsonSource_bytes);        
@@ -208,7 +208,7 @@ public class JsonDeserializationBenchmarks {
     @GenerateMicroBenchmark
     public void timeJacksonVulgaris() throws IOException {
         final Customer customer_dsl = jsonSerialization.deserialize(customerType, new String(customerJsonSource_bytes, "UTF-8"));
-        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
+//        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
         //System.out.println(customer);
         //System.out.println(getTransactionsNum(customer));
     }
@@ -216,25 +216,25 @@ public class JsonDeserializationBenchmarks {
     @GenerateMicroBenchmark
     public void timeJacksonAfterBurner() throws IOException {
         final Customer customer_dsl = afterburnerSerialization.deserialize(customerType, new String(customerJsonSource_bytes, "UTF-8"));
-        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
+//        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
     }
 
     @GenerateMicroBenchmark
     public void timeJacksonStreaming() throws IOException {
         final Customer customer_dsl = CustomerJacksonStreamingSerialization.deserialize(jsonFactory, new String(customerJsonSource_bytes, "UTF-8"));
-        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
+//        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
     }
 
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreaming() throws IOException {
         final Customer customer_dsl = CustomerManualOptJsonSerialization.deserializeWith(customerJsonSource_bytes);
-        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
+//        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
     }
 
     @GenerateMicroBenchmark
     public void timeManualOptimizedJsonStreamingNew() throws IOException {
         final Customer customer_dsl = CustomerManualOptJsonSerialization.deserializeOptimized(customerJsonSource_bytes);
-        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
+//        final AccountingProtobuf.Customer customer_protobuf = Util.toProtobuf(customer_dsl);
     }
 
     @GenerateMicroBenchmark
