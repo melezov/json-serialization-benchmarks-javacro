@@ -1,9 +1,7 @@
 package com.javacro.dslplatform.model.Accounting;
 
 public final class Profile implements java.io.Serializable {
-    public Profile(
-            final String email,
-            final String phoneNumber) {
+    public Profile(final String email, final String phoneNumber) {
         setEmail(email);
         setPhoneNumber(phoneNumber);
     }
@@ -15,10 +13,8 @@ public final class Profile implements java.io.Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + 1346342343;
-        result = prime * result
-                + (this.email != null ? this.email.hashCode() : 0);
-        result = prime * result
-                + (this.phoneNumber != null ? this.phoneNumber.hashCode() : 0);
+        result = prime * result + (this.email != null ? this.email.hashCode() : 0);
+        result = prime * result + (this.phoneNumber != null ? this.phoneNumber.hashCode() : 0);
         return result;
     }
 
@@ -30,8 +26,7 @@ public final class Profile implements java.io.Serializable {
         if (!(obj instanceof Profile)) return false;
         final Profile other = (Profile) obj;
 
-        if (!(this.email == other.email || this.email != null
-                && this.email.equals(other.email))) return false;
+        if (!(this.email == other.email || this.email != null && this.email.equals(other.email))) return false;
         if (!(this.phoneNumber == other.phoneNumber || this.phoneNumber != null
                 && this.phoneNumber.equals(other.phoneNumber))) return false;
 
@@ -41,6 +36,15 @@ public final class Profile implements java.io.Serializable {
     @Override
     public String toString() {
         return "Profile(" + email + ',' + phoneNumber + ')';
+    }
+
+    @com.fasterxml.jackson.annotation.JsonCreator
+    private Profile(
+            @com.fasterxml.jackson.annotation.JsonProperty("_helper") final boolean _helper,
+            @com.fasterxml.jackson.annotation.JsonProperty("email") final String email,
+            @com.fasterxml.jackson.annotation.JsonProperty("phoneNumber") final String phoneNumber) {
+        this.email = email;
+        this.phoneNumber = phoneNumber;
     }
 
     private static final long serialVersionUID = 0x0097000a;

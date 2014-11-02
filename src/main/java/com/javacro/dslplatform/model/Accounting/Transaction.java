@@ -26,10 +26,8 @@ public final class Transaction implements java.io.Serializable {
         result = prime * result + 174931478;
         result = prime * result + (Double.valueOf(this.inflow).hashCode());
         result = prime * result + (Double.valueOf(this.outflow).hashCode());
-        result = prime * result
-                + (this.description != null ? this.description.hashCode() : 0);
-        result = prime * result
-                + (this.paymentOn != null ? this.paymentOn.hashCode() : 0);
+        result = prime * result + (this.description.hashCode());
+        result = prime * result + (this.paymentOn.hashCode());
         return result;
     }
 
@@ -41,10 +39,8 @@ public final class Transaction implements java.io.Serializable {
         if (!(obj instanceof Transaction)) return false;
         final Transaction other = (Transaction) obj;
 
-        if (!(Double.doubleToLongBits(this.inflow) == Double
-                .doubleToLongBits(other.inflow))) return false;
-        if (!(Double.doubleToLongBits(this.outflow) == Double
-                .doubleToLongBits(other.outflow))) return false;
+        if (!(Double.doubleToLongBits(this.inflow) == Double.doubleToLongBits(other.inflow))) return false;
+        if (!(Double.doubleToLongBits(this.outflow) == Double.doubleToLongBits(other.outflow))) return false;
         if (!(this.description.equals(other.description))) return false;
         if (!(this.paymentOn.equals(other.paymentOn))) return false;
 
@@ -53,8 +49,20 @@ public final class Transaction implements java.io.Serializable {
 
     @Override
     public String toString() {
-        return "Transaction(" + inflow + ',' + outflow + ',' + description
-                + ',' + paymentOn + ')';
+        return "Transaction(" + inflow + ',' + outflow + ',' + description + ',' + paymentOn + ')';
+    }
+
+    @com.fasterxml.jackson.annotation.JsonCreator
+    private Transaction(
+            @com.fasterxml.jackson.annotation.JsonProperty("_helper") final boolean _helper,
+            @com.fasterxml.jackson.annotation.JsonProperty("inflow") final double inflow,
+            @com.fasterxml.jackson.annotation.JsonProperty("outflow") final double outflow,
+            @com.fasterxml.jackson.annotation.JsonProperty("description") final String description,
+            @com.fasterxml.jackson.annotation.JsonProperty("paymentOn") final org.joda.time.DateTime paymentOn) {
+        this.inflow = inflow;
+        this.outflow = outflow;
+        this.description = description == null ? "" : description;
+        this.paymentOn = paymentOn == null ? new org.joda.time.DateTime(1, 1, 1, 0, 0) : paymentOn;
     }
 
     private static final long serialVersionUID = 0x0097000a;
@@ -96,9 +104,7 @@ public final class Transaction implements java.io.Serializable {
     }
 
     public Transaction setDescription(final String value) {
-        if (value == null)
-            throw new IllegalArgumentException(
-                    "Property \"description\" cannot be null!");
+        if (value == null) throw new IllegalArgumentException("Property \"description\" cannot be null!");
         this.description = value;
 
         return this;
@@ -113,9 +119,7 @@ public final class Transaction implements java.io.Serializable {
     }
 
     public Transaction setPaymentOn(final org.joda.time.DateTime value) {
-        if (value == null)
-            throw new IllegalArgumentException(
-                    "Property \"paymentOn\" cannot be null!");
+        if (value == null) throw new IllegalArgumentException("Property \"paymentOn\" cannot be null!");
         this.paymentOn = value;
 
         return this;

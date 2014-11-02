@@ -32,8 +32,7 @@ public final class Guards {
         try {
             if (value != null) value.setScale(scale);
         } catch (final ArithmeticException e) {
-            throw new IllegalArgumentException("Decimal places allowed: "
-                    + scale + ". Value: " + value, e);
+            throw new IllegalArgumentException("Decimal places allowed: " + scale + ". Value: " + value, e);
         }
     }
 
@@ -45,19 +44,15 @@ public final class Guards {
             try {
                 if (value != null) value.setScale(scale);
             } catch (final ArithmeticException e) {
-                throw new IllegalArgumentException(
-                        "Invalid value for element at index " + i
-                                + ". Decimal places allowed: " + scale
-                                + ". Value: " + value, e);
+                throw new IllegalArgumentException("Invalid value for element at index " + i
+                        + ". Decimal places allowed: " + scale + ". Value: " + value, e);
             }
 
             i++;
         }
     }
 
-    public static void checkScale(
-            final Iterable<BigDecimal> values,
-            final int scale) {
+    public static void checkScale(final Iterable<BigDecimal> values, final int scale) {
         if (values == null) return;
 
         int i = 0;
@@ -65,10 +60,8 @@ public final class Guards {
             try {
                 if (value != null) value.setScale(scale);
             } catch (final ArithmeticException e) {
-                throw new IllegalArgumentException(
-                        "Invalid value for element at index " + i
-                                + ". Decimal places allowed: " + scale
-                                + ". Value: " + value, e);
+                throw new IllegalArgumentException("Invalid value for element at index " + i
+                        + ". Decimal places allowed: " + scale + ". Value: " + value, e);
             }
 
             i++;
@@ -79,33 +72,25 @@ public final class Guards {
         return value.setScale(scale, BigDecimal.ROUND_HALF_UP);
     }
 
-    public static List<BigDecimal> setScale(
-            final List<BigDecimal> values,
-            final int scale) {
+    public static List<BigDecimal> setScale(final List<BigDecimal> values, final int scale) {
         if (values == null) return null;
 
-        final ArrayList<BigDecimal> result = new ArrayList<BigDecimal>(
-                values.size());
+        final ArrayList<BigDecimal> result = new ArrayList<BigDecimal>(values.size());
         for (final BigDecimal value : values)
             result.add(value != null ? setScale(value, scale) : null);
         return result;
     }
 
-    public static Set<BigDecimal> setScale(
-            final Set<BigDecimal> values,
-            final int scale) {
+    public static Set<BigDecimal> setScale(final Set<BigDecimal> values, final int scale) {
         if (values == null) return null;
 
-        final HashSet<BigDecimal> result = new HashSet<BigDecimal>(
-                values.size());
+        final HashSet<BigDecimal> result = new HashSet<BigDecimal>(values.size());
         for (final BigDecimal value : values)
             result.add(value != null ? setScale(value, scale) : null);
         return result;
     }
 
-    public static BigDecimal[] setScale(
-            final BigDecimal[] values,
-            final int scale) {
+    public static BigDecimal[] setScale(final BigDecimal[] values, final int scale) {
         if (values == null) return null;
 
         final BigDecimal[] result = new BigDecimal[values.length];
@@ -117,22 +102,17 @@ public final class Guards {
 
     public static void checkLength(final String value, final int length) {
         if (value != null && value.length() > length)
-            throw new IllegalArgumentException("Maximum length allowed: "
-                    + length + ". Value: " + value);
+            throw new IllegalArgumentException("Maximum length allowed: " + length + ". Value: " + value);
     }
 
-    public static void checkLength(
-            final Iterable<String> values,
-            final int length) {
+    public static void checkLength(final Iterable<String> values, final int length) {
         if (values == null) return;
 
         int i = 0;
         for (final String value : values) {
             if (value != null && value.length() > length)
-                throw new IllegalArgumentException(
-                        "Invalid value for element at index " + i
-                                + ". Maximum length allowed: " + length
-                                + ". Value: " + value);
+                throw new IllegalArgumentException("Invalid value for element at index " + i
+                        + ". Maximum length allowed: " + length + ". Value: " + value);
             i++;
         }
     }
@@ -143,17 +123,13 @@ public final class Guards {
         int i = 0;
         for (final String value : values) {
             if (value != null && value.length() > length)
-                throw new IllegalArgumentException(
-                        "Invalid value for element at index " + i
-                                + ". Maximum length allowed: " + length
-                                + ". Value: " + value);
+                throw new IllegalArgumentException("Invalid value for element at index " + i
+                        + ". Maximum length allowed: " + length + ". Value: " + value);
             i++;
         }
     }
 
-    public static boolean compareBigDecimal(
-            final Iterable<BigDecimal> left,
-            final Iterable<BigDecimal> right) {
+    public static boolean compareBigDecimal(final Iterable<BigDecimal> left, final Iterable<BigDecimal> right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
 
@@ -163,15 +139,13 @@ public final class Guards {
         while (leftIterator.hasNext() && rightIterator.hasNext()) {
             final BigDecimal l = leftIterator.next();
             final BigDecimal r = rightIterator.next();
-            if (!(l == r || l != null && l.compareTo(r) == 0)) return false;
+            if (!(l == r || l != null && r != null && l.compareTo(r) == 0)) return false;
         }
 
         return leftIterator.hasNext() == rightIterator.hasNext();
     }
 
-    public static boolean compareBigDecimal(
-            final BigDecimal[] left,
-            final BigDecimal[] right) {
+    public static boolean compareBigDecimal(final BigDecimal[] left, final BigDecimal[] right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
 
@@ -179,35 +153,33 @@ public final class Guards {
         for (int i = 0; i < left.length; i++) {
             final BigDecimal l = left[i];
             final BigDecimal r = right[i];
-            if (!(l == r || l != null && l.compareTo(r) == 0)) return false;
+            if (!(l == r || l != null && r != null && l.compareTo(r) == 0)) return false;
         }
         return true;
     }
 
-    public static boolean compareBigDecimal(
-            final Set<BigDecimal> left,
-            final Set<BigDecimal> right) {
+    private static final Comparator<BigDecimal> bigDecimalComparator = new Comparator<BigDecimal>() {
+        @Override
+        public int compare(final BigDecimal left, final BigDecimal right) {
+            return left == null && right == null ? 0 : left == null ? -1 : right == null ? 1 : left.compareTo(right);
+        }
+    };
+
+    public static boolean compareBigDecimal(final Set<BigDecimal> left, final Set<BigDecimal> right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
 
         if (left.size() != right.size()) return false;
 
-        for (final BigDecimal l : left) {
-            boolean found = false;
-            for (final BigDecimal r : right) {
-                if (l == r || l != null && l.compareTo(r) == 0) {
-                    found = true;
-                    break;
-                }
-            }
-            if (!found) return false;
-        }
-        return true;
+        final BigDecimal[] leftSorted = left.toArray(new BigDecimal[left.size()]);
+        Arrays.sort(leftSorted, bigDecimalComparator);
+        final BigDecimal[] rightSorted = right.toArray(new BigDecimal[right.size()]);
+        Arrays.sort(rightSorted, bigDecimalComparator);
+
+        return compareBigDecimal(leftSorted, rightSorted);
     }
 
-    public static boolean compareBinary(
-            final Iterable<byte[]> left,
-            final Iterable<byte[]> right) {
+    public static boolean compareBinary(final Iterable<byte[]> left, final Iterable<byte[]> right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
 
@@ -223,39 +195,29 @@ public final class Guards {
         return leftIterator.hasNext() == rightIterator.hasNext();
     }
 
-    public static boolean compareBinary(
-            final byte[][] left,
-            final byte[][] right) {
+    public static boolean compareBinary(final byte[][] left, final byte[][] right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
 
-        if (left != null && right != null) {
-            if (left.length != right.length) return false;
-            for (int i = 0; i < left.length; i++) {
-                if (!Arrays.equals(left[i], right[i])) return false;
-            }
-            return true;
+        if (left.length != right.length) return false;
+
+        for (int i = 0; i < left.length; i++) {
+            if (!Arrays.equals(left[i], right[i])) return false;
         }
-        return false;
+        return true;
     }
 
-    public static boolean compareBinary(
-            final Set<byte[]> left,
-            final Set<byte[]> right) {
+    public static boolean compareBinary(final Set<byte[]> left, final Set<byte[]> right) {
         if (left == null && right == null) return true;
         if (left == null || right == null) return false;
 
         if (left.size() != right.size()) return false;
 
-        for (final byte[] l : left) {
-            boolean found = false;
+        loop: for (final byte[] l : left) {
             for (final byte[] r : right) {
-                if (Arrays.equals(l, r)) {
-                    found = true;
-                    break;
-                }
+                if (Arrays.equals(l, r)) continue loop;
             }
-            if (!found) return false;
+            return false;
         }
         return true;
     }

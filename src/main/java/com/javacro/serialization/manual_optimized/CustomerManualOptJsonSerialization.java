@@ -76,7 +76,7 @@ public abstract class CustomerManualOptJsonSerialization {
         String _name = "";
         Profile _profile = new Profile();
         ArrayList<Account> _accounts = null;
-        if (nextToken == '}') return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+        if (nextToken == '}') return new Customer(_id, _name, _profile, _accounts);
         int nameHash = ManualJson.fillName(reader, buffer, nextToken);
         nextToken = ManualJson.getNextToken(reader);
         if (nextToken == 'n') {
@@ -177,7 +177,7 @@ public abstract class CustomerManualOptJsonSerialization {
             if (nextToken == -1) throw new IOException("Unexpected end of json in object Transaction");
             else throw new IOException("Expecting '}' at position " + ManualJson.positionInStream(reader) + ". Found " + (char)nextToken);
         }
-        return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+        return new Customer(_id, _name, _profile, _accounts);
     }
 
     public static Customer deserialize(final JsonReader reader, final ServiceLocator locator) throws IOException {
@@ -186,7 +186,7 @@ public abstract class CustomerManualOptJsonSerialization {
         String _name = "";
         Profile _profile = new Profile();
         ArrayList<Account> _accounts = null;
-        if (reader.read() == '}') return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+        if (reader.read() == '}') return new Customer(_id, _name, _profile, _accounts);
         int nameHash = reader.fillName();
         int nextToken = reader.moveToNextToken();
         if (nextToken == 'n') {
@@ -289,16 +289,16 @@ public abstract class CustomerManualOptJsonSerialization {
             if (nextToken == -1) throw new IOException("Unexpected end of json in object Transaction");
             else throw new IOException("Expecting '}' at position " + reader.positionInStream() + ". Found " + (char)nextToken);
         }
-        return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+        return new Customer(locator, _uri, _id, _name, _profile, _accounts);
     }
-    
+
     public static Customer deserialize(final JsonReaderOptimized reader, final ServiceLocator locator) throws IOException {
         String _uri = "";
         long _id = 0L;
         String _name = "";
         Profile _profile = new Profile();
         ArrayList<Account> _accounts = null;
-        if (reader.getNextToken() == '}') return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+        if (reader.getNextToken() == '}') return new Customer(locator, _uri, _id, _name, _profile, _accounts);
         int nameHash = reader.fillName();
         int nextToken = reader.getNextToken();
         if (nextToken == 'n') {
@@ -356,48 +356,48 @@ public abstract class CustomerManualOptJsonSerialization {
             }
             else {
                 switch(nameHash) {
-	                case 1:
-	                    _uri = reader.readString();
-	                    nextToken = reader.getNextToken();
-	                    break;
-	                case 25458:
-	                    _id = Long.parseLong(reader.readShortValue());
-	                    nextToken = reader.moveToNextToken();
-	                    break;
-	                case 24614690:
-	                    _name = reader.readString();
-	                    nextToken = reader.getNextToken();
-	                    break;
-	                case 1120506290:
-	                    if (nextToken != '{') throw new IOException("Expecting '{'");
-	                    nextToken = reader.getNextToken();
-	                    _profile = ProfileManualOptJsonSerialization.deserialize(reader);
-	                    nextToken = reader.getNextToken();
-	                    break;
-	                case -758926083:
-	                    if (nextToken != '[') throw new IOException("Expecting '['");
-	                    nextToken = reader.getNextToken();
-	                    if (nextToken != '{') throw new IOException("Expecting '{'");
-	                    nextToken = reader.getNextToken();
-	                    _accounts = new ArrayList<Account>();
-	                    _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
-	                    while((nextToken = reader.getNextToken()) == ',') {
-	                        nextToken = reader.getNextToken();
-	                        if (nextToken != '{') throw new IOException("Expecting '{'");
-	                        nextToken = reader.getNextToken();
-	                        _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
-	                    }
-	                    nextToken = reader.getNextToken();
-	                    break;
-	                default:
-	                    nextToken = reader.skip();
-	                    break;
+                  case 1:
+                      _uri = reader.readString();
+                      nextToken = reader.getNextToken();
+                      break;
+                  case 25458:
+                      _id = Long.parseLong(reader.readShortValue());
+                      nextToken = reader.moveToNextToken();
+                      break;
+                  case 24614690:
+                      _name = reader.readString();
+                      nextToken = reader.getNextToken();
+                      break;
+                  case 1120506290:
+                      if (nextToken != '{') throw new IOException("Expecting '{'");
+                      nextToken = reader.getNextToken();
+                      _profile = ProfileManualOptJsonSerialization.deserialize(reader);
+                      nextToken = reader.getNextToken();
+                      break;
+                  case -758926083:
+                      if (nextToken != '[') throw new IOException("Expecting '['");
+                      nextToken = reader.getNextToken();
+                      if (nextToken != '{') throw new IOException("Expecting '{'");
+                      nextToken = reader.getNextToken();
+                      _accounts = new ArrayList<Account>();
+                      _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
+                      while((nextToken = reader.getNextToken()) == ',') {
+                          nextToken = reader.getNextToken();
+                          if (nextToken != '{') throw new IOException("Expecting '{'");
+                          nextToken = reader.getNextToken();
+                          _accounts.add(AccountManualOptJsonSerialization.deserialize(reader));
+                      }
+                      nextToken = reader.getNextToken();
+                      break;
+                  default:
+                      nextToken = reader.skip();
+                      break;
                 }
             }
         }
         if (nextToken != '}') {
             throw new IOException("Expecting '}' at position " + reader.positionInStream() + ". Found " + (char)nextToken);
         }
-        return new Customer(_uri, _id, _name, _profile, _accounts, locator);
+        return new Customer(locator, _uri, _id, _name, _profile, _accounts);
     }
 }

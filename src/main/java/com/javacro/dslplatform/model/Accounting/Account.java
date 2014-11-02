@@ -21,10 +21,8 @@ public final class Account implements java.io.Serializable {
         final int prime = 31;
         int result = 1;
         result = prime * result + 767759945;
-        result = prime * result
-                + (this.IBAN != null ? this.IBAN.hashCode() : 0);
-        result = prime * result
-                + (this.currency != null ? this.currency.hashCode() : 0);
+        result = prime * result + (this.IBAN.hashCode());
+        result = prime * result + (this.currency.hashCode());
         return result;
     }
 
@@ -39,8 +37,7 @@ public final class Account implements java.io.Serializable {
         if (!(this.IBAN.equals(other.IBAN))) return false;
         if (!(this.currency.equals(other.currency))) return false;
         if (!((this.transactions == other.transactions || this.transactions != null
-                && this.transactions.equals(other.transactions))))
-            return false;
+                && this.transactions.equals(other.transactions)))) return false;
 
         return true;
     }
@@ -48,6 +45,19 @@ public final class Account implements java.io.Serializable {
     @Override
     public String toString() {
         return "Account(" + IBAN + ',' + currency + ',' + transactions + ')';
+    }
+
+    @com.fasterxml.jackson.annotation.JsonCreator
+    private Account(
+            @com.fasterxml.jackson.annotation.JsonProperty("_helper") final boolean _helper,
+            @com.fasterxml.jackson.annotation.JsonProperty("IBAN") final String IBAN,
+            @com.fasterxml.jackson.annotation.JsonProperty("currency") final String currency,
+            @com.fasterxml.jackson.annotation.JsonProperty("transactions") final java.util.List<com.javacro.dslplatform.model.Accounting.Transaction> transactions) {
+        this.IBAN = IBAN == null ? "" : IBAN;
+        this.currency = currency == null ? "" : currency;
+        this.transactions = transactions == null
+                ? new java.util.ArrayList<com.javacro.dslplatform.model.Accounting.Transaction>()
+                : transactions;
     }
 
     private static final long serialVersionUID = 0x0097000a;
@@ -61,9 +71,7 @@ public final class Account implements java.io.Serializable {
     }
 
     public Account setIBAN(final String value) {
-        if (value == null)
-            throw new IllegalArgumentException(
-                    "Property \"IBAN\" cannot be null!");
+        if (value == null) throw new IllegalArgumentException("Property \"IBAN\" cannot be null!");
         this.IBAN = value;
 
         return this;
@@ -78,9 +86,7 @@ public final class Account implements java.io.Serializable {
     }
 
     public Account setCurrency(final String value) {
-        if (value == null)
-            throw new IllegalArgumentException(
-                    "Property \"currency\" cannot be null!");
+        if (value == null) throw new IllegalArgumentException("Property \"currency\" cannot be null!");
         this.currency = value;
 
         return this;
@@ -94,11 +100,8 @@ public final class Account implements java.io.Serializable {
         return transactions;
     }
 
-    public Account setTransactions(
-            final java.util.List<com.javacro.dslplatform.model.Accounting.Transaction> value) {
-        if (value == null)
-            throw new IllegalArgumentException(
-                    "Property \"transactions\" cannot be null!");
+    public Account setTransactions(final java.util.List<com.javacro.dslplatform.model.Accounting.Transaction> value) {
+        if (value == null) throw new IllegalArgumentException("Property \"transactions\" cannot be null!");
         com.javacro.dslplatform.model.Guards.checkNulls(value);
         this.transactions = value;
 
